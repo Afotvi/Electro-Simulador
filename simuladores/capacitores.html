@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capacitores · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="2">
+    <header class="sim-head">
+      <span class="chip">Unidad 2 · Circuitos</span>
+      <h1>Capacitores y capacitancia</h1>
+      <p>Un capacitor almacena carga y energía en el campo entre sus placas. Prueba un dieléctrico, desconecta la batería y mira qué pasa; después combina varios en serie y en paralelo.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Capacitor de placas paralelas y combinaciones de capacitores"></canvas></div>
+
+      <aside class="panel">
+        <div class="seg">
+          <button class="btn" id="tabP" type="button">Capacitor de placas</button>
+          <button class="btn ghost" id="tabC" type="button">Serie y paralelo</button>
+        </div>
+
+        <!-- ===== Vista 1: placas ===== -->
+        <div class="stack" id="v1">
+          <div>
+            <h3>Capacitor</h3>
+            <div class="ctrl"><label for="A">Área de las placas A <output id="Av"></output></label>
+              <input id="A" type="range" min="10" max="200" step="10" value="100"></div>
+            <div class="ctrl"><label for="d">Separación d <output id="dv"></output></label>
+              <input id="d" type="range" min="0.5" max="10" step="0.5" value="1"></div>
+            <div class="ctrl"><label for="V">Voltaje de la batería <output id="Vv"></output></label>
+              <input id="V" type="range" min="1" max="24" step="1" value="12"></div>
+          </div>
+
+          <div>
+            <h3>Dieléctrico</h3>
+            <div class="ctrl"><label for="diel">Material</label><select id="diel"></select></div>
+            <div class="ctrl"><label for="x">Cuánto entra entre las placas <output id="xv"></output></label>
+              <input id="x" type="range" min="0" max="100" step="10" value="0"></div>
+          </div>
+
+          <div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="pConn" type="button">Desconectar la batería</button>
+              <button class="btn ghost" id="pDis" type="button">Descargar por un bombillo</button>
+            </div>
+            <p class="hint" id="pStatus" style="margin-top:8px"></p>
+          </div>
+
+          <div class="readout">
+            <div class="stat"><span>Capacitancia C</span><b id="pC">–</b></div>
+            <div class="stat"><span>C respecto al vacío</span><b id="pRatio">–</b></div>
+            <div class="stat"><span>Carga Q</span><b id="pQ">–</b></div>
+            <div class="stat"><span>Voltaje V</span><b id="pV">–</b></div>
+            <div class="stat"><span>Campo E = V/d</span><b id="pE">–</b></div>
+            <div class="stat"><span>Energía U</span><b id="pU">–</b></div>
+          </div>
+
+          <div>
+            <h3>Cálculo paso a paso</h3>
+            <div class="formula"><code id="pFormula" style="white-space:pre"></code></div>
+          </div>
+
+          <div>
+            <button class="btn ghost" id="pEx" type="button">Cargar ejercicio guiado</button>
+            <p class="hint" style="margin-top:8px" id="pHint"></p>
+          </div>
+        </div>
+
+        <!-- ===== Vista 2: combinaciones ===== -->
+        <div class="stack" id="v2" hidden>
+          <div>
+            <h3>Tipo de conexión</h3>
+            <div class="seg">
+              <button class="btn" id="mSerie" type="button">Serie</button>
+              <button class="btn ghost" id="mPar" type="button">Paralelo</button>
+              <button class="btn ghost" id="mComb" type="button">Combinado</button>
+            </div>
+            <p class="hint" style="margin-top:8px">Combinado: C₁ en serie con C₂ ∥ C₃.</p>
+          </div>
+
+          <div>
+            <h3>Valores</h3>
+            <div class="ctrl"><label for="Vc">Voltaje de la batería <output id="Vcv"></output></label>
+              <input id="Vc" type="range" min="1" max="24" step="1" value="12"></div>
+            <div class="ctrl"><label for="c1">C₁ <output id="c1v"></output></label><input id="c1" type="range" min="5" max="100" step="5" value="10"></div>
+            <div class="ctrl"><label for="c2">C₂ <output id="c2v"></output></label><input id="c2" type="range" min="5" max="100" step="5" value="20"></div>
+            <div class="ctrl"><label for="c3">C₃ <output id="c3v"></output></label><input id="c3" type="range" min="5" max="100" step="5" value="60"></div>
+          </div>
+
+          <div class="readout">
+            <div class="stat"><span>C equivalente</span><b id="cEq">–</b></div>
+            <div class="stat"><span>Carga total</span><b id="cQ">–</b></div>
+            <div class="stat" style="grid-column:1/-1"><span>Energía total</span><b id="cU">–</b></div>
+          </div>
+
+          <div id="cTbl"></div>
+
+          <div>
+            <h3>Cálculo paso a paso</h3>
+            <div class="formula"><code id="cFormula" style="white-space:pre"></code></div>
+          </div>
+
+          <div>
+            <button class="btn ghost" id="cEx" type="button">Cargar ejercicio guiado</button>
+            <p class="hint" style="margin-top:8px" id="cHint"></p>
+          </div>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "Un capacitor guarda carga y energía en el campo entre sus placas: C = κε₀A/d. Más área o menos separación significa más capacitancia.", "observe": ["Acerca las placas: C sube.", "Desconecta la batería y mete el dieléctrico: Q se queda y V baja.", "Con la batería conectada, el dieléctrico hace que entre más carga."], "predict": [{"q": "Con la batería conectada, si duplicas la separación d, la capacitancia…", "options": ["se duplica", "se reduce a la mitad", "no cambia", "se cuadruplica"], "correct": 1, "why": "C = ε₀A/d es inversamente proporcional a d.", "try": {"label": "Probarlo: d = 2 mm", "set": {"d": 2}}}, {"q": "Si duplicas el voltaje de la batería (12 → 24 V), la energía almacenada…", "options": ["se duplica", "se cuadruplica", "no cambia", "se reduce a la mitad"], "correct": 1, "why": "U = ½CV² depende de V al cuadrado.", "try": {"label": "Probarlo: V = 24 V", "set": {"V": 24}}}], "stepsIntro": "Pulsa «Cargar ejercicio guiado» (vista Capacitor de placas): A = 0,01 m², d = 1 mm, V = 12 V, sin dieléctrico. (ε₀ = 8,85×10⁻¹² F/m)", "steps": [{"q": "¿Cuánto vale C?", "answer": 88.54, "unit": "pF", "hint": "C = ε₀A/d = 8,85×10⁻¹² · 0,01 / 0,001.", "sol": "C ≈ 88,5 pF."}, {"q": "¿Cuánta carga Q almacena?", "answer": 1.0625, "unit": "nC", "hint": "Q = CV = 88,5 pF · 12 V.", "sol": "Q ≈ 1,06 nC."}, {"q": "¿Cuánta energía U almacena?", "answer": 6.375, "unit": "nJ", "hint": "U = ½CV² = ½ · 88,5×10⁻¹² · 144.", "sol": "U ≈ 6,38 nJ."}], "challenges": [{"label": "Área máxima (200 cm²)", "set": {"A": 200}, "note": "C se duplica: ≈ 177 pF."}, {"label": "Separación mínima (0,5 mm)", "set": {"d": 0.5}, "note": "C se duplica: ≈ 177 pF."}], "mistakes": ["Dejar A en cm² o d en mm al sustituir: pásalos a m² y m.", "Usar pF como si fueran F.", "Creer que desconectar la batería deja V igual: V cambia si cambias C y Q se mantiene."], "glossary": {"C": "Capacitancia, en faradios (F); 1 pF = 10⁻¹² F.", "Q": "Carga en cada placa, en culombios.", "κ": "Constante dieléctrica del material entre las placas.", "U": "Energía almacenada, en joules."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/capacitors.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/capacitores.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

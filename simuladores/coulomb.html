@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ley de Coulomb · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="1">
+    <header class="sim-head">
+      <span class="chip">Unidad 1 · Electrostática</span>
+      <h1>Ley de Coulomb</h1>
+      <p>Arrastra las cargas por la pantalla. Cargas iguales se repelen y opuestas se atraen; la flecha amarilla es la fuerza que siente cada una.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Simulación de dos cargas eléctricas"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Cargas</h3>
+          <div class="ctrl"><label for="q1">q₁ <output id="q1v"></output></label>
+            <input id="q1" type="range" min="-10" max="10" step="0.5" value="3"></div>
+          <div class="ctrl"><label for="q2">q₂ <output id="q2v"></output></label>
+            <input id="q2" type="range" min="-10" max="10" step="0.5" value="-5"></div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>Distancia r</span><b id="r">–</b></div>
+          <div class="stat"><span>Fuerza |F|</span><b id="f">–</b></div>
+          <div class="stat" style="grid-column:1/-1"><span>Tipo de interacción</span><b id="kind">–</b></div>
+        </div>
+
+        <div>
+          <h3>Fórmula</h3>
+          <div class="formula"><code id="formula"></code></div>
+        </div>
+
+        <p class="hint">Ejercicio: q₁ = +3 µC, q₂ = −5 µC y r = 0,30 m. ¿Cuánta fuerza hay? Pulsa el botón y compara con tu cálculo (≈ 1,5 N).</p>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "La fuerza entre dos cargas crece con el producto de sus cargas y baja con el cuadrado de la distancia: si duplicas r, la fuerza queda en la cuarta parte.", "observe": ["Cambia el signo de una carga y mira cómo se invierten las flechas amarillas.", "Aleja una carga: la flecha se acorta mucho más rápido que la distancia crece.", "Las dos flechas siempre son iguales y opuestas (tercera ley de Newton)."], "predict": [{"q": "Si duplicas q₁ (de +3 a +6 µC) y no mueves nada más, la fuerza…", "options": ["se duplica", "se cuadruplica", "no cambia", "se reduce a la mitad"], "correct": 0, "why": "F = k|q₁q₂|/r² es directamente proporcional a q₁.", "try": {"label": "Probarlo: poner q₁ = +6 µC", "set": {"q1": 6}}}, {"q": "Si duplicas la distancia r entre las cargas, la fuerza…", "options": ["se reduce a la mitad", "se reduce a la cuarta parte", "se duplica", "no cambia"], "correct": 1, "why": "r está al cuadrado: (2r)² = 4r², así que F queda en 1/4. Compruébalo arrastrando una carga y mirando la fórmula."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado» arriba (q₁ = +3 µC, q₂ = −5 µC, r = 0,30 m) y resuelve a mano antes de verificar.", "steps": [{"q": "¿Cuánto vale r²?", "answer": 0.09, "unit": "m²", "hint": "r = 0,30 m, así que r² = 0,30 × 0,30.", "sol": "r² = 0,09 m²."}, {"q": "¿Cuánto vale |q₁·q₂| en C²? (1 µC = 10⁻⁶ C)", "answer": 1.5e-11, "unit": "C²", "hint": "(3×10⁻⁶)·(5×10⁻⁶) = 15×10⁻¹² = 1,5×10⁻¹¹.", "sol": "|q₁q₂| = 1,5×10⁻¹¹ C²."}, {"q": "¿Cuánto vale la fuerza |F|? (k = 8,99×10⁹ N·m²/C²)", "answer": 1.498, "unit": "N", "tol": 0.03, "hint": "F = k·|q₁q₂|/r² = 8,99×10⁹ · 1,5×10⁻¹¹ / 0,09.", "sol": "F ≈ 1,50 N. Es atractiva porque las cargas tienen signos opuestos."}, {"q": "Si duplicas r a 0,60 m, ¿cuánto vale |F|?", "answer": 0.3745, "unit": "N", "hint": "Divide la fuerza anterior entre 2² = 4.", "sol": "F ≈ 0,375 N: la cuarta parte."}], "challenges": [{"label": "Cargas iguales (+5 y +5)", "set": {"q1": 5, "q2": 5}, "note": "Mismo signo: las flechas se alejan, hay repulsión."}, {"label": "Opuestas (+5 y −5)", "set": {"q1": 5, "q2": -5}, "note": "Signos opuestos: atracción, con la mayor fuerza posible en este rango."}, {"label": "Una carga neutra (q₂ = 0)", "set": {"q1": 5, "q2": 0}, "note": "Sin carga en q₂ no hay fuerza: F = 0."}], "mistakes": ["Usar 3 µC como 3 C: 3 µC = 3×10⁻⁶ C.", "Olvidar elevar r al cuadrado.", "Creer que el signo de F es la dirección: solo indica si atrae o repele; la dirección va sobre la línea que une las cargas."], "glossary": {"q": "Carga eléctrica, en culombios (C). Aquí se usan µC (10⁻⁶ C).", "r": "Distancia entre los centros de las cargas, en metros.", "k": "Constante de Coulomb: 8,99×10⁹ N·m²/C².", "F": "Fuerza eléctrica, en newtons (N).", "µC": "Microculombio, 10⁻⁶ C."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/coulomb.js"></script>
+  <script src="../js/components/numeric.js"></script>
+</body>
+</html>

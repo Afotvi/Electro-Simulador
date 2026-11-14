@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leyes de Kirchhoff · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="2">
+    <header class="sim-head">
+      <span class="chip">Unidad 2 · Circuitos</span>
+      <h1>Leyes de Kirchhoff</h1>
+      <p>Un circuito con dos fuentes y tres ramas. En el nodo A la corriente que entra es la que sale; en cada malla, los voltajes suman cero. Cambia una fuente a negativo y mira qué pasa con la corriente.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Circuito de dos mallas con dos fuentes"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Fuentes y resistencias</h3>
+          <div class="ctrl"><label for="e1">ε₁ <output id="e1v"></output></label>
+            <input id="e1" type="range" min="-24" max="24" step="1" value="12"></div>
+          <div class="ctrl"><label for="e2">ε₂ <output id="e2v"></output></label>
+            <input id="e2" type="range" min="-24" max="24" step="1" value="6"></div>
+          <div class="ctrl"><label for="r1">R₁ <output id="r1v"></output></label>
+            <input id="r1" type="range" min="10" max="500" step="10" value="20"></div>
+          <div class="ctrl"><label for="r2">R₂ <output id="r2v"></output></label>
+            <input id="r2" type="range" min="10" max="500" step="10" value="30"></div>
+          <div class="ctrl"><label for="r3">R₃ <output id="r3v"></output></label>
+            <input id="r3" type="range" min="10" max="500" step="10" value="60"></div>
+          <p class="hint">Un valor negativo invierte la polaridad de la fuente.</p>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>I₁ (sube)</span><b id="i1">–</b></div>
+          <div class="stat"><span>I₂ (sube)</span><b id="i2">–</b></div>
+          <div class="stat" style="grid-column:1/-1"><span>I₃ (baja)</span><b id="i3">–</b></div>
+        </div>
+
+        <div>
+          <h3>Practica</h3>
+          <label class="chk"><input id="hideAns" type="checkbox"> Ocultar respuestas (modo ejercicio)</label>
+          <div class="ans">
+            <b>I₁</b><input id="a1" type="text" inputmode="decimal" placeholder="mA"><span>mA</span><span class="st" id="s1"></span>
+            <b>I₂</b><input id="a2" type="text" inputmode="decimal" placeholder="mA"><span>mA</span><span class="st" id="s2"></span>
+            <b>I₃</b><input id="a3" type="text" inputmode="decimal" placeholder="mA"><span>mA</span><span class="st" id="s3"></span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="verify" type="button">Comprobar</button>
+            <button class="btn ghost" id="newEx" type="button">Nuevo ejercicio</button>
+          </div>
+          <p class="hint" id="fb" style="margin-top:8px">Pulsa «Nuevo ejercicio», resuélvelo en papel y comprueba tus respuestas.</p>
+        </div>
+
+        <details id="sol">
+          <summary>Ver el planteamiento paso a paso</summary>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </details>
+
+        <div id="verif">
+          <h3>Comprobación</h3>
+          <div class="formula"><code id="check" style="white-space:pre"></code></div>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "En un nodo entra tanta corriente como sale, y al dar una vuelta completa por una malla las subidas y caídas de voltaje suman cero.", "observe": ["Una corriente negativa no es un error: circula al revés del sentido de referencia.", "Cambia ε₂ y mira cómo cambia I₂ incluso de signo.", "Comprueba que el nodo y las dos mallas den 0."], "predict": [{"q": "Con ε₁ = 12 V, ε₂ = 6 V, R = 20, 30, 60 Ω, I₂ sale negativa. Eso significa que…", "options": ["la fuente ε₂ está dañada", "I₂ circula al revés del sentido de referencia", "se cometió un error de cálculo", "R₂ es negativa"], "correct": 1, "why": "El signo solo compara con el sentido que elegimos al plantear las ecuaciones.", "try": {"label": "Probarlo: ε₂ = 12 V", "set": {"e1": 12, "e2": 12}}}], "stepsIntro": "Con ε₁ = 12 V, ε₂ = 6 V, R₁ = 20, R₂ = 30 y R₃ = 60 Ω. Resuelve el sistema 2×2 antes de verificar.", "steps": [{"q": "¿Cuánto vale I₁? (en A)", "answer": 0.2, "unit": "A", "hint": "80·I₁ + 60·I₂ = 12 y 60·I₁ + 90·I₂ = 6.", "sol": "I₁ = 0,200 A."}, {"q": "¿Cuánto vale I₂? (en A, con signo)", "answer": -0.0667, "unit": "A", "hint": "Despeja de la primera: I₂ = (12 − 80·0,2)/60.", "sol": "I₂ ≈ −0,0667 A: circula al revés."}, {"q": "¿Cuánto vale I₃? (en A)", "answer": 0.1333, "unit": "A", "hint": "Nodo: I₃ = I₁ + I₂.", "sol": "I₃ ≈ 0,133 A."}], "challenges": [{"label": "ε₂ = 12 V", "set": {"e1": 12, "e2": 12}, "note": "Todas positivas: I₁ = 100 mA, I₂ = 66,7 mA, I₃ = 166,7 mA."}, {"label": "ε₂ = 0", "set": {"e1": 12, "e2": 0}, "note": "I₁ = 300 mA, I₂ = −200 mA, I₃ = 100 mA."}], "mistakes": ["Ignorar el signo de las corrientes al sustituir.", "Olvidar que I₃ = I₁ + I₂.", "Cambiar el sentido de recorrido de la malla a mitad de camino."], "glossary": {"ε": "Fuerza electromotriz de la fuente, en voltios.", "Nodo": "Punto donde se unen tres o más ramas.", "Malla": "Camino cerrado dentro del circuito."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/circuit.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/kirchhoff.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

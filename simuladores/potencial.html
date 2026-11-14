@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Potencial eléctrico · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="2">
+    <header class="sim-head">
+      <span class="chip">Unidad 2 · Circuitos</span>
+      <h1>Potencial eléctrico</h1>
+      <p>El color es el potencial V en cada punto y las líneas unen puntos con el mismo V (equipotenciales). Arrastra los puntos A y B para medir la diferencia de potencial y el trabajo que hace el campo.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="sim-main">
+        <div class="stage"><canvas id="stage" aria-label="Mapa de potencial eléctrico con líneas equipotenciales"></canvas></div>
+
+        <div class="panel release">
+          <h3>Soltar carga</h3>
+          <div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="release" type="button">Soltar q₀ desde A</button>
+              <button class="btn ghost" id="stopP" type="button">Quitar</button>
+            </div>
+            <p class="hint" id="relMsg" style="margin-top:8px"></p>
+          </div>
+          <div class="row3">
+            <div class="stat"><span>Potencial U</span><b id="eU" style="font-size:1.05rem">–</b></div>
+            <div class="stat"><span>Cinética K</span><b id="eK" style="font-size:1.05rem">–</b></div>
+            <div class="stat"><span>Mecánica U + K</span><b id="eT" style="font-size:1.05rem">–</b></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div>
+          <h3>Escenas rápidas</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="pUna" type="button">Una carga</button>
+            <button class="btn ghost" id="pDipolo" type="button">Dipolo</button>
+            <button class="btn ghost" id="pIguales" type="button">Dos iguales</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Cargas</h3>
+          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga seleccionada</span> <output id="qselv">–</output></label>
+            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="2"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="addPos" type="button">+ Agregar</button>
+            <button class="btn" id="addNeg" type="button">− Agregar</button>
+            <button class="btn ghost" id="del" type="button">Quitar</button>
+            <button class="btn ghost" id="clear" type="button">Limpiar</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Carga de prueba y vista</h3>
+          <div class="ctrl"><label for="q0">Carga q₀ que se mueve de A a B <output id="q0v"></output></label>
+            <input id="q0" type="range" min="-5" max="5" step="0.5" value="1"></div>
+          <label class="chk"><input id="showHeat" type="checkbox" checked> Mapa de colores</label>
+          <label class="chk"><input id="showLines" type="checkbox" checked> Líneas equipotenciales</label>
+          
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>V en A</span><b id="vA">–</b></div>
+          <div class="stat"><span>V en B</span><b id="vB">–</b></div>
+          <div class="stat"><span>ΔV = V_B − V_A</span><b id="dV">–</b></div>
+          <div class="stat"><span>E en A</span><b id="eA">–</b></div>
+          <div class="stat"><span>ΔU = q₀·ΔV</span><b id="dU">–</b></div>
+          <div class="stat"><span>Trabajo del campo</span><b id="W">–</b></div>
+        </div>
+
+        <div>
+          <h3>Cálculo paso a paso</h3>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </div>
+
+        <div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+          <p class="hint" style="margin-top:8px">Ejercicio: q = +4 nC, A a 0,2 m y B a 0,6 m. Calcula V_A = kq/r (≈ 180 V) y V_B (≈ 60 V). Con q₀ = +1 nC, ¿cuánto trabajo hace el campo al llevarla de A a B? Prueba también el dipolo: A y B quedan sobre la línea V = 0 y W = 0.</p>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "El potencial V = kq/r es energía por unidad de carga. El trabajo del campo entre dos puntos es W = q₀(V_A − V_B) y no depende del camino.", "observe": ["Las líneas equipotenciales siempre cruzan las líneas de campo en ángulo recto.", "Una carga positiva se mueve hacia menor potencial.", "Con el dipolo, A y B quedan sobre V = 0 y el trabajo es cero."], "predict": [{"q": "Si duplicas q₀ (de +1 a +2 nC), el trabajo de A a B…", "options": ["se duplica", "se reduce a la mitad", "no cambia", "se cuadruplica"], "correct": 0, "why": "W = q₀(V_A − V_B) es proporcional a q₀.", "try": {"label": "Probarlo: q₀ = +2 nC", "set": {"q0": 2}}}, {"q": "Si q₀ es negativa (−1 nC), el trabajo de A a B…", "options": ["cambia de signo", "es el mismo", "es cero", "se duplica"], "correct": 0, "why": "V_A − V_B sigue igual, pero q₀ cambió de signo.", "try": {"label": "Probarlo: q₀ = −1 nC", "set": {"q0": -1}}}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: q = +4 nC, A a 0,2 m y B a 0,6 m, q₀ = +1 nC.", "steps": [{"q": "¿Cuánto vale V_A?", "answer": 179.75, "unit": "V", "hint": "V = kq/r = 8,99×10⁹ · 4×10⁻⁹ / 0,2.", "sol": "V_A ≈ 180 V."}, {"q": "¿Cuánto vale V_B?", "answer": 59.92, "unit": "V", "hint": "Misma fórmula con r = 0,6 m.", "sol": "V_B ≈ 60 V."}, {"q": "¿Cuánto trabajo hace el campo sobre q₀ de A a B? (en nJ)", "answer": 119.8, "unit": "nJ", "hint": "W = q₀(V_A − V_B) = 1 nC · 120 V.", "sol": "W ≈ 120 nJ (positivo: el campo empuja a q₀)."}], "challenges": [{"label": "q₀ = +2 nC", "set": {"q0": 2}, "note": "W ≈ 240 nJ: el doble."}, {"label": "q₀ = −1 nC", "set": {"q0": -1}, "note": "W ≈ −120 nJ: el campo se opone al movimiento."}], "mistakes": ["Confundir potencial V (voltios) con energía potencial U (joules).", "Invertir el orden: es V_A − V_B, no V_B − V_A.", "Pensar que potencial cero significa campo cero."], "glossary": {"V": "Potencial eléctrico, en voltios (J/C).", "U": "Energía potencial, U = q·V, en joules.", "W": "Trabajo del campo eléctrico.", "Equipotencial": "Línea o superficie donde V es el mismo en todos los puntos."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/field.js"></script>
+  <script src="../js/core/contours.js"></script>
+  <script src="../js/core/particle.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/potencial.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

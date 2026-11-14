@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campo Abierto · Laboratorio virtual de electromagnetismo</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body data-root="./" data-page="inicio">
+  <main class="container">
+    <section class="home-hero">
+      <div>
+        <h1>La física se entiende mejor cuando la puedes mover.</h1>
+        <p>Campo Abierto es un laboratorio de electricidad y magnetismo. Mueve la carga sobre el recuadro y mira cómo se deforma el campo de la otra.</p>
+        <div class="cta-row">
+          <a class="btn" href="simulaciones.html">Ver simulaciones</a>
+          <a class="btn ghost" href="#ruta">Ruta sugerida</a>
+        </div>
+      </div>
+      <div>
+        <div class="home-stage"><canvas id="hero-canvas" aria-label="Campo eléctrico de dos cargas. Mueve el cursor para mover una de ellas."></canvas></div>
+        <p class="hint home-hint">Mueve el cursor o toca el recuadro. Carga que mueves: <b id="hero-sign">negativa (azul)</b>. <button type="button" class="linkbtn" id="hero-flip">Cambiar signo</button></p>
+      </div>
+    </section>
+
+    <section class="how" aria-labelledby="how-h">
+      <h2 id="how-h">Cómo usar el laboratorio</h2>
+      <ol>
+        <li><b>Elige un tema.</b> En Simulaciones están agrupados por tema, con su nivel y lo que conviene ver antes.</li>
+        <li><b>Predice antes de mover.</b> Cada simulación empieza con una pregunta: responde y comprueba.</li>
+        <li><b>Mueve, escribe y verifica.</b> Usa los deslizadores o escribe el valor exacto; luego resuelve el ejercicio guiado paso a paso.</li>
+      </ol>
+    </section>
+
+    <section id="ruta" aria-labelledby="ruta-h">
+      <h2 id="ruta-h" class="route-h">Una ruta para recorrerlo en orden</h2>
+      <ol class="route" id="route">
+      <li><a href="simuladores/coulomb.html"><b>Ley de Coulomb</b><span>La fuerza entre dos cargas y cómo cambia con la distancia.</span></a></li>
+      <li><a href="simuladores/campo-electrico.html"><b>Campo eléctrico</b><span>Qué le hace una carga al espacio que la rodea.</span></a></li>
+      <li><a href="simuladores/gauss.html"><b>Ley de Gauss</b><span>Flujo y carga encerrada.</span></a></li>
+      <li><a href="simuladores/potencial.html"><b>Potencial eléctrico</b><span>Energía por unidad de carga y equipotenciales.</span></a></li>
+      <li><a href="simuladores/capacitores.html"><b>Capacitores</b><span>Guardar carga y energía entre dos placas.</span></a></li>
+      <li><a href="simuladores/resistencia.html"><b>Resistencia</b><span>Por qué un cable frena la corriente.</span></a></li>
+      <li><a href="simuladores/ohm.html"><b>Ley de Ohm y circuitos</b><span>Serie, paralelo y combinado.</span></a></li>
+      <li><a href="simuladores/kirchhoff.html"><b>Leyes de Kirchhoff</b><span>Nodos y mallas.</span></a></li>
+      <li class="soon"><div><b>Magnetismo</b><span>Próximamente: Lorentz, Biot-Savart, Ampère y Faraday.</span></div></li>
+      </ol>
+    </section>
+  </main>
+  <script src="js/core/constants.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/engine.js"></script>
+  <script src="js/core/draw.js"></script>
+  <script src="js/core/field.js"></script>
+  <script src="js/components/navbar.js"></script>
+  <script src="js/pages/home.js"></script>
+</body>
+</html>

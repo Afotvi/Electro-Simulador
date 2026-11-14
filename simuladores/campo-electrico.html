@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campo eléctrico · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="1">
+    <header class="sim-head">
+      <span class="chip">Unidad 1 · Electrostática</span>
+      <h1>Campo eléctrico</h1>
+      <p>Las líneas salen de las cargas positivas y entran en las negativas. Arrastra el círculo blanco (la carga de prueba) para medir el campo en cualquier punto.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Simulación de líneas de campo eléctrico"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Escenas rápidas</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="pUna" type="button">Una carga</button>
+            <button class="btn ghost" id="pDipolo" type="button">Dipolo</button>
+            <button class="btn ghost" id="pIguales" type="button">Dos iguales</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Cargas</h3>
+          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga seleccionada</span> <output id="qselv">–</output></label>
+            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="2"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="addPos" type="button">+ Agregar</button>
+            <button class="btn" id="addNeg" type="button">− Agregar</button>
+            <button class="btn ghost" id="del" type="button">Quitar</button>
+            <button class="btn ghost" id="clear" type="button">Limpiar</button>
+          </div>
+          <p class="hint" style="margin-top:8px">Toca una carga para seleccionarla (máx. 6).</p>
+        </div>
+
+        <div>
+          <h3>Vista</h3>
+          <label style="display:flex;gap:8px;align-items:center"><input id="showLines" type="checkbox" checked> Líneas de campo</label>
+          <label style="display:flex;gap:8px;align-items:center"><input id="showVec" type="checkbox"> Vectores en cuadrícula</label>
+          <label style="display:flex;gap:8px;align-items:center"><input id="showFlow" type="checkbox" checked> Flujo animado (de + a −)</label>
+        </div>
+
+        <div>
+          <h3>Soltar una carga</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="pPos" type="button">Soltar carga +</button>
+            <button class="btn" id="pNeg" type="button">Soltar carga −</button>
+            <button class="btn ghost" id="pStop" type="button">Quitar</button>
+          </div>
+          <p class="hint" style="margin-top:8px">Sale del reposo desde el círculo blanco (±1 nC, 10 µg, en cámara lenta). Puedes mover las cargas mientras viaja.</p>
+          <div class="readout" style="margin-top:10px">
+            <div class="stat"><span>Velocidad</span><b id="pv">–</b></div>
+            <div class="stat"><span>Estado</span><b id="pst" style="font-size:.95rem">–</b></div>
+          </div>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>Campo |E| en la prueba</span><b id="emag">–</b></div>
+          <div class="stat"><span>Dirección</span><b id="eang">–</b></div>
+        </div>
+
+        <div>
+          <h3>Cálculo paso a paso</h3>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </div>
+
+        <div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+          <p class="hint" style="margin-top:8px">Ejercicio: q = +2 nC y un punto a 0,5 m. ¿Cuánto vale E? Calcúlalo con E = kq/r² y compáralo (≈ 72 N/C).</p>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "El campo eléctrico dice qué fuerza sentiría una carga de prueba positiva en cada punto: E = kq/r². Se aleja de las cargas positivas y apunta hacia las negativas.", "observe": ["Las líneas salen de las cargas positivas y llegan a las negativas, y nunca se cruzan.", "Donde las líneas se juntan, el campo es más intenso.", "Suelta una carga + y una −: se mueven en sentidos opuestos."], "predict": [{"q": "Si duplicas la distancia a una carga puntual, el campo…", "options": ["se reduce a la mitad", "se reduce a la cuarta parte", "se duplica", "no cambia"], "correct": 1, "why": "E ∝ 1/r²: al duplicar r, E queda en 1/4."}, {"q": "En un dipolo (+q y −q), en el punto medio entre ellas el campo…", "options": ["es cero", "apunta de la + hacia la −", "apunta de la − hacia la +", "es infinito"], "correct": 1, "why": "Los dos aportes apuntan en el mismo sentido (alejándose de + y acercándose a −), así que se suman."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: q = +2 nC y un punto a 0,5 m. (k = 8,99×10⁹ N·m²/C²)", "steps": [{"q": "¿Cuánto vale r²?", "answer": 0.25, "unit": "m²", "hint": "0,5 × 0,5.", "sol": "r² = 0,25 m²."}, {"q": "¿Cuánto vale E?", "answer": 71.9, "unit": "N/C", "hint": "E = 8,99×10⁹ · 2×10⁻⁹ / 0,25.", "sol": "E ≈ 72 N/C, apuntando hacia afuera de la carga positiva."}, {"q": "¿Qué fuerza sentiría una carga de prueba de +3 nC ahí? (en N)", "answer": 2.157e-07, "unit": "N", "hint": "F = qE = 3×10⁻⁹ · 71,9.", "sol": "F ≈ 2,16×10⁻⁷ N."}, {"q": "¿Cuánto vale E a 1,0 m?", "answer": 17.98, "unit": "N/C", "hint": "Al duplicar r, E baja a la cuarta parte.", "sol": "E ≈ 18,0 N/C."}], "challenges": [{"label": "Carga seleccionada = +4 nC", "set": {"qsel": 4}, "note": "Toca la carga para seleccionarla. Con +4 nC, E a 0,5 m ≈ 144 N/C: doble carga, doble campo."}], "mistakes": ["Usar nC como si fueran C: 2 nC = 2×10⁻⁹ C.", "Olvidar que E es vector: hay que sumar con dirección, no solo magnitudes.", "Pensar que las líneas son trayectorias: muestran la dirección del campo en cada punto."], "glossary": {"E": "Campo eléctrico, en N/C (o V/m).", "q": "Carga fuente, en culombios; aquí en nC (10⁻⁹ C).", "Carga de prueba": "Carga pequeña y positiva imaginaria que sirve para medir el campo."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/field.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/core/particle.js"></script>
+  <script src="../js/sims/campo-electrico.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

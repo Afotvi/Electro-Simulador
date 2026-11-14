@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resistencia y resistividad · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="2">
+    <header class="sim-head">
+      <span class="chip">Unidad 2 · Circuitos</span>
+      <h1>Resistencia y resistividad</h1>
+      <p>Elige el material, alarga o engrosa el cable y mira qué pasa con la resistencia y la corriente. Los puntos celestes son los electrones libres; los blancos, los iones de la red.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Cable con electrones libres y escala de resistividad"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Cable</h3>
+          <div class="ctrl"><label for="mat">Material</label><select id="mat"></select></div>
+          <div class="ctrl"><label for="L">Longitud L <output id="Lv"></output></label>
+            <input id="L" type="range" min="5" max="200" step="5" value="100"></div>
+          <div class="ctrl"><label for="A">Área de la sección A <output id="Av"></output></label>
+            <input id="A" type="range" min="0.5" max="10" step="0.5" value="1"></div>
+          <div class="ctrl"><label for="V">Voltaje aplicado <output id="Vv"></output></label>
+            <input id="V" type="range" min="1" max="12" step="1" value="12"></div>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>Resistencia R</span><b id="R">–</b></div>
+          <div class="stat"><span>Corriente I</span><b id="I">–</b></div>
+          <div class="stat"><span>Densidad J</span><b id="J">–</b></div>
+          <div class="stat"><span>Campo E</span><b id="E">–</b></div>
+          <div class="stat"><span>Potencia P</span><b id="P">–</b></div>
+          <div class="stat"><span>Vel. de deriva</span><b id="vd">–</b></div>
+        </div>
+        <p class="warn" id="warn" hidden></p>
+
+        <div>
+          <h3>Cálculo paso a paso</h3>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </div>
+
+        <div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+          <p class="hint" style="margin-top:8px" id="exhint">Ejercicio: cable de cobre de 100 m y 1 mm² a 12 V.</p>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "La resistencia de un cable crece con su longitud y se reduce con su área: R = ρL/A. El material entra por ρ.", "observe": ["Duplica L y mira R y la corriente.", "Compara cobre con vidrio: ¿cuántos órdenes de magnitud cambia ρ?", "La velocidad de deriva real es de décimas de mm/s, aunque la luz llegue al instante."], "predict": [{"q": "Si duplicas el área A del cable, la resistencia…", "options": ["se duplica", "se reduce a la mitad", "no cambia", "se reduce a la cuarta parte"], "correct": 1, "why": "R es inversamente proporcional a A.", "try": {"label": "Probarlo: A = 2 mm²", "set": {"A": 2}}}, {"q": "Si duplicas la longitud L, la resistencia…", "options": ["se duplica", "se reduce a la mitad", "se cuadruplica", "no cambia"], "correct": 0, "why": "R es directamente proporcional a L.", "try": {"label": "Probarlo: L = 200 m", "set": {"L": 200}}}], "stepsIntro": "Cobre (ρ = 1,68×10⁻⁸ Ω·m), L = 100 m, A = 1 mm² y V = 12 V.", "steps": [{"q": "¿Cuánto vale R?", "answer": 1.68, "unit": "Ω", "hint": "A = 1 mm² = 10⁻⁶ m². R = ρL/A.", "sol": "R = 1,68×10⁻⁸ · 100 / 10⁻⁶ = 1,68 Ω."}, {"q": "¿Cuánta corriente circula?", "answer": 7.143, "unit": "A", "hint": "I = V/R = 12 / 1,68.", "sol": "I ≈ 7,14 A."}, {"q": "¿Cuánto vale R si L = 200 m?", "answer": 3.36, "unit": "Ω", "hint": "Doble longitud, doble resistencia.", "sol": "R = 3,36 Ω."}], "challenges": [{"label": "Cable grueso (A = 10 mm²)", "set": {"A": 10}, "note": "R baja a 0,168 Ω y la corriente sube 10 veces."}, {"label": "Cable largo (L = 200 m)", "set": {"L": 200, "A": 1}, "note": "R = 3,36 Ω: la corriente baja a la mitad."}], "mistakes": ["Usar mm² en la fórmula sin pasar a m² (1 mm² = 10⁻⁶ m²).", "Confundir resistividad ρ con resistencia R.", "Pensar que un aislante corta toda la corriente: es muy pequeña, no cero."], "glossary": {"ρ": "Resistividad del material, en Ω·m.", "L": "Longitud del cable, en metros.", "A": "Área de la sección transversal.", "J": "Densidad de corriente, I/A, en A/m²."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/materials.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/resistencia.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

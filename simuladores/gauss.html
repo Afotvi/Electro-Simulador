@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ley de Gauss · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="1">
+    <header class="sim-head">
+      <span class="chip">Unidad 1 · Electrostática</span>
+      <h1>Ley de Gauss</h1>
+      <p>El círculo es el corte de una esfera imaginaria. Solo importa la carga que queda adentro: las flechas rojas salen, las azules entran. Mueve cargas, arrastra el círculo y cambia su radio.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Simulación de la ley de Gauss con una superficie esférica"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Escenas rápidas</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="pAdentro" type="button">Carga adentro</button>
+            <button class="btn ghost" id="pMixto" type="button">Adentro y afuera</button>
+            <button class="btn ghost" id="pDipolo" type="button">Dipolo adentro</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Superficie gaussiana</h3>
+          <div class="ctrl"><label for="rad">Radio <output id="radv"></output></label>
+            <input id="rad" type="range" min="0.2" max="1" step="0.05" value="0.6"></div>
+          <p class="hint">También puedes arrastrar el borde para cambiar el radio, o el interior para moverla.</p>
+        </div>
+
+        <div>
+          <h3>Cargas</h3>
+          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga seleccionada</span> <output id="qselv">–</output></label>
+            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="2"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="addPos" type="button">+ Agregar</button>
+            <button class="btn" id="addNeg" type="button">− Agregar</button>
+            <button class="btn ghost" id="del" type="button">Quitar</button>
+            <button class="btn ghost" id="clear" type="button">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>Cargas adentro</span><b id="nin">–</b></div>
+          <div class="stat"><span>Q encerrada</span><b id="qenc">–</b></div>
+          <div class="stat" style="grid-column:1/-1"><span>Φ según Gauss (Q_enc / ε₀)</span><b id="phiT">–</b></div>
+          <div class="stat" style="grid-column:1/-1"><span>Φ calculado sumando E·dA</span><b id="phiN">–</b></div>
+        </div>
+        <p class="hint" id="warn" hidden>Hay una carga casi sobre la superficie: la suma numérica pierde precisión. Sepárala un poco.</p>
+
+        <div>
+          <h3>Cálculo paso a paso</h3>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </div>
+
+        <div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+          <p class="hint" style="margin-top:8px">Ejercicio: Q_enc = 5 nC. Φ = Q/ε₀ ≈ 565 N·m²/C. Ahora cambia el radio: ¿cambia el flujo? Mueve la carga dentro del círculo: ¿y ahora?</p>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "El flujo eléctrico a través de una superficie cerrada solo depende de la carga que hay dentro: Φ = Q_enc/ε₀. El tamaño y la forma no importan.", "observe": ["Agranda el radio sin sacar la carga: el flujo no cambia.", "Saca una carga de la superficie: su aporte desaparece.", "Compara el valor teórico con el cálculo numérico."], "predict": [{"q": "Con una carga dentro, si agrandas el radio de la superficie (sin tocar la carga), el flujo…", "options": ["aumenta", "disminuye", "no cambia"], "correct": 2, "why": "Solo cuenta Q_enc: aunque E sea menor, el área es mayor y se compensan.", "try": {"label": "Probarlo: radio = 1,0 m", "set": {"rad": 1}}}, {"q": "Una carga de +3 nC está fuera de la superficie. Su aporte al flujo neto es…", "options": ["+3 nC/ε₀", "cero", "negativo", "depende de la distancia"], "correct": 1, "why": "Todo lo que entra por un lado sale por el otro: la contribución neta es cero."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: una carga de +5 nC dentro de la superficie. (ε₀ = 8,85×10⁻¹² C²/N·m²)", "steps": [{"q": "¿Cuánto vale el flujo Φ?", "answer": 564.7, "unit": "N·m²/C", "hint": "Φ = Q/ε₀ = 5×10⁻⁹ / 8,85×10⁻¹².", "sol": "Φ ≈ 565 N·m²/C."}, {"q": "¿Cuánto vale Φ si el radio se duplica?", "answer": 564.7, "unit": "N·m²/C", "hint": "Q_enc no cambió.", "sol": "Igual: ≈ 565 N·m²/C."}, {"q": "¿Cuánto vale Φ si Q_enc = −2 nC?", "answer": -225.9, "unit": "N·m²/C", "hint": "Φ = −2×10⁻⁹ / 8,85×10⁻¹². El signo importa.", "sol": "Φ ≈ −226 N·m²/C (flujo entrante)."}], "challenges": [{"label": "Radio mínimo (0,2 m)", "set": {"rad": 0.2}, "note": "Si la carga queda dentro, el flujo es el mismo."}, {"label": "Radio máximo (1,0 m)", "set": {"rad": 1}, "note": "Mismo flujo con una superficie mucho mayor."}], "mistakes": ["Creer que el flujo depende del radio.", "Contar cargas que están fuera de la superficie.", "Olvidar el signo: Q_enc negativa da flujo negativo."], "glossary": {"Φ": "Flujo eléctrico, en N·m²/C.", "Q_enc": "Carga neta encerrada por la superficie.", "ε₀": "Permitividad del vacío, 8,85×10⁻¹² C²/(N·m²).", "Superficie gaussiana": "Superficie cerrada imaginaria que elegimos para aplicar la ley."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/constants.js"></script>
+  <script src="../js/core/field.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/gauss.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>

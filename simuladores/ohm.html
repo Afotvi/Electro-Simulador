@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ley de Ohm y circuitos · Campo Abierto</title>
+  
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-root="../" data-page="sim">
+  <main class="container" data-unit="2">
+    <header class="sim-head">
+      <span class="chip">Unidad 2 · Circuitos</span>
+      <h1>Ley de Ohm y circuitos</h1>
+      <p>Cambia el voltaje y las resistencias, y mira cómo se reparte la corriente. Los puntitos amarillos van de + a − y se mueven más rápido cuanta más corriente pasa; el brillo del bombillo depende de la potencia.</p>
+    </header>
+
+    <section class="sim-layout">
+      <div class="stage"><canvas id="stage" aria-label="Circuito eléctrico con tres bombillos"></canvas></div>
+
+      <aside class="panel">
+        <div>
+          <h3>Tipo de circuito</h3>
+          <div class="seg">
+            <button class="btn" id="mSerie" type="button">Serie</button>
+            <button class="btn ghost" id="mPar" type="button">Paralelo</button>
+            <button class="btn ghost" id="mComb" type="button">Combinado</button>
+          </div>
+          <p class="hint" style="margin-top:8px">Combinado: R₁ en serie con R₂ ∥ R₃.</p>
+        </div>
+
+        <div>
+          <h3>Valores</h3>
+          <div class="ctrl"><label for="v">Voltaje de la batería <output id="vv"></output></label>
+            <input id="v" type="range" min="1" max="24" step="1" value="12"></div>
+          <div class="ctrl"><label for="r1">R₁ <output id="r1v"></output></label>
+            <input id="r1" type="range" min="10" max="500" step="10" value="100"></div>
+          <div class="ctrl"><label for="r2">R₂ <output id="r2v"></output></label>
+            <input id="r2" type="range" min="10" max="500" step="10" value="200"></div>
+          <div class="ctrl"><label for="r3">R₃ <output id="r3v"></output></label>
+            <input id="r3" type="range" min="10" max="500" step="10" value="300"></div>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><span>R equivalente</span><b id="req">–</b></div>
+          <div class="stat"><span>Corriente total</span><b id="itot">–</b></div>
+          <div class="stat" style="grid-column:1/-1"><span>Potencia de la batería</span><b id="ptot">–</b></div>
+        </div>
+
+        <div id="tbl"></div>
+
+        <div>
+          <h3>Cálculo paso a paso</h3>
+          <div class="formula"><code id="formula" style="white-space:pre"></code></div>
+        </div>
+
+        <div>
+          <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
+          <p class="hint" style="margin-top:8px" id="exhint"></p>
+        </div>
+      </aside>
+    </section>
+  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+  <script type="application/json" id="didactic-data">{"idea": "En serie la corriente es la misma en todo el circuito y el voltaje se reparte; en paralelo el voltaje es el mismo y la corriente se reparte.", "observe": ["Sube una resistencia en serie y mira cómo cambia la corriente de todas las demás.", "Abre una rama (en paralelo) y mira que las otras no se enteran.", "Revisa que la suma de las caídas de voltaje en serie sea igual al voltaje de la batería."], "predict": [{"q": "En serie, si duplicas R₁ (de 100 a 200 Ω), la corriente total…", "options": ["se reduce a la mitad", "disminuye, pero menos que a la mitad", "aumenta", "no cambia"], "correct": 1, "why": "R_eq pasa de 600 a 700 Ω, no a 1200 Ω: I baja de 20 mA a unos 17 mA.", "try": {"label": "Probarlo: R₁ = 200 Ω", "set": {"r1": 200}}}], "stepsIntro": "Modo Serie, V = 12 V y R = 100, 200 y 300 Ω (botón «Cargar ejercicio guiado»).", "steps": [{"q": "¿Cuánto vale R_eq?", "answer": 600, "unit": "Ω", "hint": "En serie se suman: 100 + 200 + 300.", "sol": "R_eq = 600 Ω."}, {"q": "¿Cuánta corriente circula? (en A)", "answer": 0.02, "unit": "A", "hint": "I = V / R_eq = 12 / 600.", "sol": "I = 0,020 A = 20 mA."}, {"q": "¿Cuánto cae de voltaje en R₃ (300 Ω)?", "answer": 6, "unit": "V", "hint": "V₃ = I·R₃ = 0,02 · 300.", "sol": "V₃ = 6 V; con 2 V y 4 V en las otras suman 12 V."}], "challenges": [{"label": "R₁ = 300 Ω", "set": {"r1": 300}, "note": "R_eq = 800 Ω: I = 15 mA."}], "mistakes": ["Sumar resistencias en paralelo como si fueran en serie.", "Olvidar pasar mA a A al calcular V = IR.", "Pensar que en serie cada resistencia recibe todo el voltaje: se reparte."], "glossary": {"V": "Voltaje de la batería, en voltios.", "R": "Resistencia, en ohmios (Ω).", "I": "Corriente, en amperios (A); 1 mA = 10⁻³ A.", "R_eq": "Resistencia única que reemplazaría a todo el conjunto."}}</script>
+  </main>
+  <script src="../js/data/sims.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/core/engine.js"></script>
+  <script src="../js/core/theme.js"></script>
+  <script src="../js/core/draw.js"></script>
+  <script src="../js/core/circuit.js"></script>
+  <script src="../js/core/format.js"></script>
+  <script src="../js/sims/ohm.js"></script>
+  <script src="../js/components/numeric.js"></script>
+  <script src="../js/components/didactic.js"></script>
+</body>
+</html>
