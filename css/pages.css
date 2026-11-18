@@ -169,3 +169,12 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .stage-hud .stat span{font-size:.75rem}
 .stage-hud .stat[style*="grid-column"]{grid-column:auto}
 @media (max-width:560px){.stage-hud{margin:0 8px 8px}.stage-hud .stat{min-width:92px}}
+
+/* Pantalla completa: solo se muestra la simulación (nada más dentro de .sim-main) */
+.is-expanded>.sim-main>:not(.stage){display:none!important}
+.is-expanded~.didactic{display:none}
+
+/* Animaciones del simulador de Gauss */
+.anim-ctrl{display:grid;gap:8px;margin:2px 0 12px}
+.anim-ctrl .check{display:flex;gap:8px;align-items:center;font-size:.9rem;font-weight:600}
+.anim-ctrl .btn[aria-pressed="true"]{background:var(--accent);color:#fff}
