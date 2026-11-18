@@ -1,170 +1,115 @@
+// Ley de Gauss con esferas: maciza o casquete, conductora o no conductora.
 (function () {
 'use strict';
 const CA = (window.CA = window.CA || {});
-const { mountNavbar } = CA;
-const { SimCanvas } = CA;
-const { drawGrid, arrow, chargeDot } = CA;
-const { fieldAt, fluxThroughSphere } = CA;
-const { EPS0 } = CA;
-const { COLORS } = CA;
-const { fmt } = CA;
-
+const { mountNavbar, SimCanvas, drawGrid, arrow, label, COLORS, fmt, si, K, EPS0 } = CA;
 mountNavbar();
 
-const NC = 1e-9;
-const R_PX = 14;
-const MAX_CHARGES = 6;
-const R_MIN = 0.2, R_MAX = 1.0;
-const SPOTS = [[-1.2, 0.8], [1.2, 0.8], [-1.2, -0.8], [1.2, -0.8], [0, 1.1], [0, -1.1]];
-const GRAY = '#9aa5d1';
-
-const PRESETS = {
-  adentro: () => [{ x: 0.2, y: 0.1, q: 3 }],
-  mixto:   () => [{ x: -0.2, y: 0.1, q: 2 }, { x: 1.1, y: 0.3, q: -3 }],
-  dipolo:  () => [{ x: -0.2, y: 0, q: 3 }, { x: 0.2, y: 0, q: -3 }],
-};
-
-let charges = PRESETS.adentro();
-let surf = { x: 0, y: 0, R: 0.6 };   // superficie gaussiana (corte de una esfera)
-let selected = 0;
-let dirty = true;
-let drag = null;                      // { type: 'charge', c } | { type: 'resize' } | { type: 'surface', dx, dy }
-let res = { qenc: 0, phiT: 0, phiN: 0, inside: [], near: false };
-
 const $ = (id) => document.getElementById(id);
-const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-const dist = (c) => Math.hypot(c.x - surf.x, c.y - surf.y);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const NC = 1e-9, CM = 0.01, SCALE = 24, A_RATIO = 0.5; // el mundo está en cm
+const S = { shape: 'maciza', mat: 'dielectrico', Q: 8, R: 5, r: 2.5, P: { x: 6, y: 3 }, grid: true };
+const cond = () => S.mat === 'conductor', shell = () => S.shape === 'casquete';
+const aOf = () => (shell() ? S.R * A_RATIO : 0);
 
-// ---------- Cálculo (solo cuando algo cambia) ----------
-function recompute() {
-  const inside = charges.filter((c) => dist(c) < surf.R);
-  const qenc = inside.reduce((s, c) => s + c.q, 0);
-  res = {
-    inside, qenc,
-    phiT: (qenc * NC) / EPS0,                                   // Gauss: Φ = Q_enc / ε₀
-    phiN: fluxThroughSphere(charges, surf.x, surf.y, surf.R),   // integral numérica de E·dA
-    near: charges.some((c) => Math.abs(dist(c) - surf.R) < 0.06),
-  };
-  dirty = false;
+// ---------- Física (r en cm) ----------
+function qenc(r) {
+  const { R, Q } = S, a = aOf();
+  if (r >= R) return Q;
+  if (cond()) return 0;                                   // la carga del conductor está en la superficie
+  if (!shell()) return Q * (r / R) ** 3;                  // maciza no conductora: carga en el volumen
+  return r < a ? 0 : (Q * (r ** 3 - a ** 3)) / (R ** 3 - a ** 3);
 }
-
-// ---------- Interacción ----------
-const near = (e, p, wx, wy, r) => { const s = e.toScreen(wx, wy); return Math.hypot(s.x - p.sx, s.y - p.sy) < r; };
-
-const sim = new SimCanvas($('stage'), {
-  scale: 250,
-  onDown(p, e) {
-    const i = charges.findIndex((c) => near(e, p, c.x, c.y, R_PX * 1.6));
-    if (i >= 0) { drag = { type: 'charge', c: charges[i] }; selected = i; syncControls(); return; }
-    const C = e.toScreen(surf.x, surf.y), d = Math.hypot(p.sx - C.x, p.sy - C.y), Rpx = surf.R * e.scale;
-    if (Math.abs(d - Rpx) < 14) drag = { type: 'resize' };                       // borde => cambiar radio
-    else if (d < Rpx) drag = { type: 'surface', dx: surf.x - p.x, dy: surf.y - p.y }; // interior => mover
-  },
-  onMove(p, e) {
-    const b = e.bounds;
-    if (drag?.type === 'charge') {
-      drag.c.x = clamp(p.x, b.xmin + 0.1, b.xmax - 0.1); drag.c.y = clamp(p.y, b.ymin + 0.1, b.ymax - 0.1); dirty = true;
-    } else if (drag?.type === 'resize') {
-      surf.R = clamp(Math.hypot(p.x - surf.x, p.y - surf.y), R_MIN, R_MAX); dirty = true; syncControls();
-    } else if (drag?.type === 'surface') {
-      surf.x = clamp(p.x + drag.dx, b.xmin + 0.1, b.xmax - 0.1); surf.y = clamp(p.y + drag.dy, b.ymin + 0.1, b.ymax - 0.1); dirty = true;
-    } else {
-      const C = e.toScreen(surf.x, surf.y), d = Math.hypot(p.sx - C.x, p.sy - C.y), Rpx = surf.R * e.scale;
-      const overCharge = charges.some((c) => near(e, p, c.x, c.y, R_PX * 1.6));
-      e.canvas.style.cursor = overCharge ? 'grab' : Math.abs(d - Rpx) < 14 ? 'nesw-resize' : d < Rpx ? 'move' : 'default';
-    }
-  },
-  onUp(_p, e) { drag = null; e.canvas.style.cursor = 'default'; },
-
-  draw(ctx, e) {
-    ctx.fillStyle = COLORS.stage; ctx.fillRect(0, 0, e.w, e.h);
-    drawGrid(ctx, e, 0.5);
-    if (dirty) recompute();
-
-    // superficie gaussiana: color según el signo del flujo
-    const tint = res.phiT > 0 ? COLORS.pos : res.phiT < 0 ? COLORS.neg : GRAY;
-    const C = e.toScreen(surf.x, surf.y), Rpx = surf.R * e.scale;
-    ctx.fillStyle = tint + '18'; ctx.beginPath(); ctx.arc(C.x, C.y, Rpx, 0, Math.PI * 2); ctx.fill();
-    ctx.setLineDash([9, 7]); ctx.strokeStyle = tint; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.arc(C.x, C.y, Rpx, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-
-    // campo sobre la superficie: rojo = sale (flujo +), azul = entra (flujo −)
-    const N = 28;
-    for (let k = 0; k < N; k++) {
-      const a = (2 * Math.PI * k) / N;
-      const px = surf.x + surf.R * Math.cos(a), py = surf.y + surf.R * Math.sin(a);
-      const f = fieldAt(charges, px, py), m = Math.hypot(f.ex, f.ey);
-      if (m === 0) continue;
-      const en = f.ex * Math.cos(a) + f.ey * Math.sin(a);               // componente normal (en el plano)
-      const color = Math.abs(en) < 1e-3 * m ? GRAY : en > 0 ? COLORS.pos : COLORS.neg;
-      const s = e.toScreen(px, py), len = Math.min(34, 10 + 14 * Math.log10(1 + m / 5));
-      arrow(ctx, s.x, s.y, s.x + (f.ex / m) * len, s.y - (f.ey / m) * len, { color, width: 2.5, head: 9 });
-    }
-
-    // asa para cambiar el radio
-    const hx = C.x + Rpx * Math.cos(-Math.PI / 4), hy = C.y + Rpx * Math.sin(-Math.PI / 4);
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, 6, 0, Math.PI * 2); ctx.fill();
-
-    // cargas
-    charges.forEach((c, i) => {
-      const s = e.toScreen(c.x, c.y);
-      if (i === selected) { ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(s.x, s.y, R_PX + 7, 0, Math.PI * 2); ctx.stroke(); }
-      if (c.q === 0) { ctx.fillStyle = '#5b6488'; ctx.beginPath(); ctx.arc(s.x, s.y, R_PX, 0, Math.PI * 2); ctx.fill(); }
-      else chargeDot(ctx, s.x, s.y, c.q, R_PX);
-    });
-
-    updateReadout();
-  },
-});
-
-// ---------- Panel ----------
-function updateReadout() {
-  const totalAbs = charges.reduce((s, c) => s + Math.abs(c.q), 0) * NC / EPS0;
-  const numZero = Math.abs(res.phiN) < 0.005 * totalAbs;
-  $('qenc').textContent = `${fmt(res.qenc)} nC`;
-  $('nin').textContent = `${res.inside.length} de ${charges.length}`;
-  $('phiT').textContent = `${fmt(res.phiT)} N·m²/C`;
-  $('phiN').textContent = numZero ? '≈ 0 N·m²/C' : `${fmt(res.phiN)} N·m²/C`;
-  $('warn').hidden = !res.near;
-
-  const lista = res.inside.length ? res.inside.map((c) => `${c.q > 0 ? '+' : ''}${c.q}`).join(' ') : '(ninguna)';
-  $('formula').textContent =
-    `Φ = Q_enc / ε₀\n` +
-    `Q_enc = ${lista} = ${fmt(res.qenc)} nC\n` +
-    `Φ = (${fmt(res.qenc * NC)}) / (${fmt(EPS0)})\n` +
-    `  = ${fmt(res.phiT)} N·m²/C`;
+const Eof = (r) => (r > 0 ? (K * qenc(r) * NC) / (r * CM) ** 2 : 0); // N/C (signo de Q: + hacia afuera)
+function regionId(r) {
+  if (Math.abs(r - S.R) < 0.05) return 'surf';
+  if (r > S.R) return 'out';
+  if (shell() && !cond()) return r < aOf() ? 'cav' : 'mat';
+  return 'in';
 }
+function rows() {
+  const zero = 'Q_enc = 0  →  E = 0', out = [];
+  if (shell() && !cond()) out.push(['cav', 'Cavidad (r < a)', zero], ['mat', 'En el material (a < r < R)', 'Q_enc = Q(r³ − a³)/(R³ − a³)  →  E = k·Q_enc/r²']);
+  else out.push(['in', 'Adentro (r < R)', cond() ? zero : 'Q_enc = Q·r³/R³  →  E = kQr/R³']);
+  out.push(['surf', 'En la superficie (r = R)', 'Q_enc = Q  →  E = kQ/R²' + (cond() ? '  (salta de 0 a este valor)' : '')],
+           ['out', 'Afuera (r > R)', 'Q_enc = Q  →  E = kQ/r²']);
+  return out;
+}
+const dirOut = () => (S.Q >= 0 ? 1 : -1);
+const Eref = () => Math.abs((K * S.Q * NC) / (S.R * CM) ** 2);
+const Lof = (E) => { const m = Eref(), x = m ? Math.abs(E) / m : 0; return x < 1e-6 ? 0 : 10 + 40 * Math.min(1, x) ** 0.45; };
 
+// ---------- Panel y resultados ----------
+function refresh() {
+  $('Qv').textContent = fmt(S.Q) + ' nC'; $('Rv').textContent = fmt(S.R) + ' cm'; $('rgv').textContent = fmt(S.r) + ' cm';
+  $('pxv').textContent = fmt(S.P.x) + ' cm'; $('pyv').textContent = fmt(S.P.y) + ' cm';
+  const q = qenc(S.r), E = Eof(S.r), id = regionId(S.r), R = rows();
+  $('sreg').textContent = R.find((x) => x[0] === id)[1].split(' (')[0];
+  $('sq').textContent = si(q * NC, 'C'); $('sphi').textContent = fmt((q * NC) / EPS0) + ' N·m²/C'; $('sE').textContent = fmt(Math.abs(E)) + ' N/C';
+  const rP = Math.hypot(S.P.x, S.P.y), EP = Eof(rP);
+  $('spE').textContent = fmt(Math.abs(EP)) + ' N/C';
+  $('spd').textContent = EP === 0 ? 'sin campo (E = 0)' : dirOut() > 0 ? 'radial, hacia afuera' : 'radial, hacia adentro';
+  $('regions').innerHTML = R.map(([rid, n, f]) => `<div class="reg${rid === id ? ' active' : ''}"><b>${n}</b><code>${f}</code>${rid === id ? `<span class="val">r = ${fmt(S.r)} cm → E = ${fmt(Math.abs(E))} N/C</span>` : ''}</div>`).join('');
+  $('formula').textContent = `r = ${fmt(S.r)} cm = ${fmt(S.r * CM)} m\nQ_enc = ${fmt(q)} nC\nΦ = Q_enc/ε₀ = ${fmt((q * NC) / EPS0)} N·m²/C\nE = Φ/(4πr²) = ${fmt(Math.abs(E))} N/C`;
+}
 function syncControls() {
-  const c = charges[selected];
-  $('qsel').disabled = !c; $('del').disabled = !c;
-  if (c) { $('qsel').value = c.q; $('qselv').textContent = `${c.q > 0 ? '+' : ''}${c.q} nC`; $('qlabel').textContent = `Carga seleccionada (q${selected + 1})`; }
-  else { $('qselv').textContent = '–'; $('qlabel').textContent = 'Carga seleccionada'; }
-  $('rad').value = surf.R; $('radv').textContent = `${fmt(surf.R)} m`;
+  $('shape').value = S.shape; $('mat').value = S.mat;
+  [['Q', S.Q], ['R', S.R], ['rg', S.r], ['px', S.P.x], ['py', S.P.y]].forEach(([id, v]) => { $(id).value = v; });
+  $('vec').checked = S.grid; refresh();
 }
+['shape', 'mat'].forEach((id) => ['input', 'change'].forEach((ev) => $(id).addEventListener(ev, () => { S[id] = $(id).value; refresh(); })));
+[['Q', (v) => (S.Q = v)], ['R', (v) => (S.R = v)], ['rg', (v) => (S.r = v)], ['px', (v) => (S.P.x = v)], ['py', (v) => (S.P.y = v)]]
+  .forEach(([id, set]) => $(id).addEventListener('input', () => { set(+$(id).value); refresh(); }));
+$('vec').addEventListener('change', () => { S.grid = $('vec').checked; });
+$('exercise').addEventListener('click', () => { Object.assign(S, { shape: 'maciza', mat: 'dielectrico', Q: 8, R: 5, r: 2.5 }); syncControls(); });
 
-function addCharge(sign) {
-  if (charges.length >= MAX_CHARGES) return;
-  const [x, y] = SPOTS.find(([sx, sy]) => charges.every((c) => Math.hypot(c.x - sx, c.y - sy) > 0.3)) ?? [0, 0];
-  charges.push({ x, y, q: 2 * sign }); selected = charges.length - 1; dirty = true; syncControls();
+// ---------- Dibujo ----------
+function marks(ctx, c, sc) {
+  const N = 36, R = S.R * sc, a = aOf() * sc;
+  ctx.fillStyle = S.Q >= 0 ? COLORS.pos : COLORS.neg;
+  for (let i = 0; i < N; i++) {
+    let rr, th = i * 2.399963;
+    if (cond()) { rr = R; th = (i / N) * 2 * Math.PI; } else rr = Math.sqrt(a * a + (R * R - a * a) * ((i + 0.5) / N));
+    ctx.beginPath(); ctx.arc(c.x + rr * Math.cos(th), c.y - rr * Math.sin(th), 3.5, 0, 7); ctx.fill();
+  }
 }
-function load(list, resetSurf = true) {
-  charges = list; selected = 0; dirty = true;
-  if (resetSurf) surf = { x: 0, y: 0, R: 0.6 };
-  syncControls();
+function draw(ctx, e) {
+  drawGrid(ctx, e, 1);
+  const c = e.toScreen(0, 0), sc = e.scale, R = S.R * sc, a = aOf() * sc, d = dirOut();
+  if (S.grid) {
+    const b = e.bounds, st = 2.5;
+    for (let gx = Math.ceil(b.xmin / st) * st; gx <= b.xmax; gx += st) for (let gy = Math.ceil(b.ymin / st) * st; gy <= b.ymax; gy += st) {
+      const r = Math.hypot(gx, gy), L = Lof(Eof(r)) * 0.7; if (r < 0.4 || !L) continue;
+      const s = e.toScreen(gx, gy);
+      arrow(ctx, s.x, s.y, s.x + (d * gx / r) * L, s.y - (d * gy / r) * L, { color: 'rgba(167,139,250,.75)', width: 1.6, head: 6 });
+    }
+  }
+  ctx.beginPath(); ctx.arc(c.x, c.y, R, 0, 7);
+  ctx.fillStyle = cond() ? 'rgba(160,170,190,.55)' : 'rgba(129,140,248,.25)'; ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = cond() ? '#cbd5e1' : '#818cf8'; ctx.stroke();
+  if (a > 0) { ctx.beginPath(); ctx.arc(c.x, c.y, a, 0, 7); ctx.fillStyle = COLORS.stage; ctx.fill(); ctx.lineWidth = 2; ctx.stroke(); }
+  marks(ctx, c, sc);
+  const gr = S.r * sc;                                          // superficie gaussiana (la esfera queda fija)
+  ctx.save(); ctx.setLineDash([9, 6]); ctx.lineWidth = 2.5; ctx.strokeStyle = COLORS.force;
+  ctx.beginPath(); ctx.arc(c.x, c.y, gr, 0, 7); ctx.stroke(); ctx.restore();
+  const L = Lof(Eof(S.r));
+  if (L) for (let k = 0; k < 16; k++) {
+    const t = (k / 16) * 2 * Math.PI, ux = Math.cos(t), uy = -Math.sin(t), x = c.x + gr * ux, y = c.y + gr * uy;
+    arrow(ctx, x, y, x + d * ux * L, y + d * uy * L, { color: COLORS.force, width: 2.5, head: 8 });
+  }
+  const P = e.toScreen(S.P.x, S.P.y), rP = Math.hypot(S.P.x, S.P.y), EP = Eof(rP), LP = Lof(EP) * 1.2;
+  ctx.save(); ctx.setLineDash([4, 5]); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(P.x, P.y); ctx.stroke(); ctx.restore();
+  if (rP > 0.01 && LP) arrow(ctx, P.x, P.y, P.x + (d * S.P.x / rP) * LP, P.y - (d * S.P.y / rP) * LP, { color: '#fff', width: 3.5, head: 11 });
+  ctx.beginPath(); ctx.arc(P.x, P.y, 7, 0, 7); ctx.lineWidth = 2.5; ctx.strokeStyle = '#fff'; ctx.stroke();
+  label(ctx, `P: ${fmt(Math.abs(EP))} N/C`, P.x + 14, P.y - 14, { align: 'left' });
+  label(ctx, `R = ${fmt(S.R)} cm`, c.x, c.y + R + 18, { color: COLORS.textDim });
+  label(ctx, `r = ${fmt(S.r)} cm`, c.x, c.y - gr - 10, { color: COLORS.force });
 }
-
-$('qsel').addEventListener('input', () => { if (charges[selected]) { charges[selected].q = parseFloat($('qsel').value); dirty = true; syncControls(); } });
-$('rad').addEventListener('input', () => { surf.R = parseFloat($('rad').value); dirty = true; syncControls(); });
-$('addPos').addEventListener('click', () => addCharge(1));
-$('addNeg').addEventListener('click', () => addCharge(-1));
-$('del').addEventListener('click', () => { charges.splice(selected, 1); selected = Math.max(0, Math.min(selected, charges.length - 1)); dirty = true; syncControls(); });
-$('clear').addEventListener('click', () => load([], false));
-$('pAdentro').addEventListener('click', () => load(PRESETS.adentro()));
-$('pMixto').addEventListener('click', () => load(PRESETS.mixto()));
-$('pDipolo').addEventListener('click', () => load(PRESETS.dipolo()));
-$('exercise').addEventListener('click', () => load([{ x: 0, y: 0, q: 5 }]));
-
+function onDown(p) {
+  S.P.x = clamp(Math.round(p.x * 10) / 10, -15, 15); S.P.y = clamp(Math.round(p.y * 10) / 10, -10, 10);
+  $('px').value = S.P.x; $('py').value = S.P.y; refresh();
+}
+new SimCanvas($('stage'), { scale: SCALE, draw, onDown }).start();
 syncControls();
-sim.start();
 })();

@@ -1,5 +1,6 @@
 // Resultados dentro del recuadro + botón «Expandir» (pantalla completa).
-// Los .readout se mueven a una barra (.stage-hud) sobre el recuadro, para no tener que desplazarse a verlos.
+// Los .readout se mueven a una barra (.stage-hud) DEBAJO del canvas y el botón va en una barra (.stage-bar) ENCIMA:
+// así ocupan su propia fila y nunca tapan la simulación.
 (function () {
   const layout = document.querySelector('.sim-layout'), stage = layout && layout.querySelector('.stage');
   if (!stage) return;
@@ -22,9 +23,12 @@
   sync();
 
   // 2) Pantalla completa
+  const bar = document.createElement('div');
+  bar.className = 'stage-bar';
   const btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'expand-btn';
-  stage.appendChild(btn);
+  bar.appendChild(btn);
+  stage.insertBefore(bar, stage.firstChild);
   const label = (on) => { btn.textContent = on ? '✕ Salir' : '⛶ Expandir'; btn.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Expandir simulación a pantalla completa'); btn.setAttribute('aria-pressed', on); };
   label(false);
   function set(on) {

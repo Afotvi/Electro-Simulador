@@ -14,48 +14,50 @@
     <header class="sim-head">
       <span class="chip">Unidad 1 · Electrostática</span>
       <h1>Ley de Gauss</h1>
-      <p>El círculo es el corte de una esfera imaginaria. Solo importa la carga que queda adentro: las flechas rojas salen, las azules entran. Mueve cargas, arrastra el círculo y cambia su radio.</p>
+      <p>La esfera queda fija; la línea amarilla es una superficie gaussiana que tú agrandas o achicas. Cambia la forma y el material, y haz clic en cualquier punto para ver el campo eléctrico allí.</p>
     </header>
 
     <section class="sim-layout">
-      <div class="stage"><canvas id="stage" aria-label="Simulación de la ley de Gauss con una superficie esférica"></canvas></div>
+      <div class="stage"><canvas id="stage" aria-label="Corte de una esfera con su superficie gaussiana. Haz clic para elegir un punto y ver el campo eléctrico allí."></canvas></div>
 
       <aside class="panel">
         <div>
-          <h3>Escenas rápidas</h3>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn ghost" id="pAdentro" type="button">Carga adentro</button>
-            <button class="btn ghost" id="pMixto" type="button">Adentro y afuera</button>
-            <button class="btn ghost" id="pDipolo" type="button">Dipolo adentro</button>
-          </div>
+          <h3>Esfera</h3>
+          <div class="ctrl"><label for="shape">Forma</label>
+            <select id="shape"><option value="maciza">Esfera maciza</option><option value="casquete">Casquete esférico (cavidad de radio R/2)</option></select></div>
+          <div class="ctrl"><label for="mat">Material</label>
+            <select id="mat"><option value="dielectrico">No conductor (dieléctrico)</option><option value="conductor">Conductor</option></select></div>
+          <div class="ctrl"><label for="Q">Carga Q <output id="Qv"></output></label>
+            <input id="Q" type="range" min="-10" max="10" step="0.5" value="8"></div>
+          <div class="ctrl"><label for="R">Radio R <output id="Rv"></output></label>
+            <input id="R" type="range" min="2" max="6" step="0.5" value="5"></div>
         </div>
 
         <div>
           <h3>Superficie gaussiana</h3>
-          <div class="ctrl"><label for="rad">Radio <output id="radv"></output></label>
-            <input id="rad" type="range" min="0.2" max="1" step="0.05" value="0.6"></div>
-          <p class="hint">También puedes arrastrar el borde para cambiar el radio, o el interior para moverla.</p>
+          <div class="ctrl"><label for="rg">Radio r desde el centro <output id="rgv"></output></label>
+            <input id="rg" type="range" min="0.5" max="10" step="0.5" value="2.5"></div>
+          <div id="regions" class="regions"></div>
         </div>
 
         <div>
-          <h3>Cargas</h3>
-          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga seleccionada</span> <output id="qselv">–</output></label>
-            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="2"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" id="addPos" type="button">+ Agregar</button>
-            <button class="btn" id="addNeg" type="button">− Agregar</button>
-            <button class="btn ghost" id="del" type="button">Quitar</button>
-            <button class="btn ghost" id="clear" type="button">Limpiar</button>
-          </div>
+          <h3>Punto de evaluación P</h3>
+          <p class="hint">Haz clic en el recuadro o escribe sus coordenadas respecto al centro.</p>
+          <div class="ctrl"><label for="px">x <output id="pxv"></output></label>
+            <input id="px" type="range" min="-15" max="15" step="0.1" value="6"></div>
+          <div class="ctrl"><label for="py">y <output id="pyv"></output></label>
+            <input id="py" type="range" min="-10" max="10" step="0.1" value="3"></div>
+          <label style="display:flex;gap:8px;align-items:center"><input id="vec" type="checkbox" checked> Vectores en cuadrícula</label>
         </div>
 
         <div class="readout">
-          <div class="stat"><span>Cargas adentro</span><b id="nin">–</b></div>
-          <div class="stat"><span>Q encerrada</span><b id="qenc">–</b></div>
-          <div class="stat" style="grid-column:1/-1"><span>Φ según Gauss (Q_enc / ε₀)</span><b id="phiT">–</b></div>
-          <div class="stat" style="grid-column:1/-1"><span>Φ calculado sumando E·dA</span><b id="phiN">–</b></div>
+          <div class="stat"><span>Región de la superficie</span><b id="sreg">–</b></div>
+          <div class="stat"><span>Q encerrada</span><b id="sq">–</b></div>
+          <div class="stat"><span>Flujo Φ = Q_enc/ε₀</span><b id="sphi">–</b></div>
+          <div class="stat"><span>E en la superficie (r)</span><b id="sE">–</b></div>
+          <div class="stat"><span>E en el punto P</span><b id="spE">–</b></div>
+          <div class="stat"><span>Dirección en P</span><b id="spd" style="font-size:.95rem">–</b></div>
         </div>
-        <p class="hint" id="warn" hidden>Hay una carga casi sobre la superficie: la suma numérica pierde precisión. Sepárala un poco.</p>
 
         <div>
           <h3>Cálculo paso a paso</h3>
@@ -64,12 +66,12 @@
 
         <div>
           <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
-          <p class="hint" style="margin-top:8px">Ejercicio: Q_enc = 5 nC. Φ = Q/ε₀ ≈ 565 N·m²/C. Ahora cambia el radio: ¿cambia el flujo? Mueve la carga dentro del círculo: ¿y ahora?</p>
+          <p class="hint" style="margin-top:8px">Ejercicio: esfera maciza no conductora, Q = +8 nC y R = 5 cm. Resuélvelo en la guía de abajo y compruébalo aquí.</p>
         </div>
       </aside>
     </section>
   <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
-  <script type="application/json" id="didactic-data">{"idea": "El flujo eléctrico a través de una superficie cerrada solo depende de la carga que hay dentro: Φ = Q_enc/ε₀. El tamaño y la forma no importan.", "observe": ["Agranda el radio sin sacar la carga: el flujo no cambia.", "Saca una carga de la superficie: su aporte desaparece.", "Compara el valor teórico con el cálculo numérico."], "predict": [{"q": "Con una carga dentro, si agrandas el radio de la superficie (sin tocar la carga), el flujo…", "options": ["aumenta", "disminuye", "no cambia"], "correct": 2, "why": "Solo cuenta Q_enc: aunque E sea menor, el área es mayor y se compensan.", "try": {"label": "Probarlo: radio = 1,0 m", "set": {"rad": 1}}}, {"q": "Una carga de +3 nC está fuera de la superficie. Su aporte al flujo neto es…", "options": ["+3 nC/ε₀", "cero", "negativo", "depende de la distancia"], "correct": 1, "why": "Todo lo que entra por un lado sale por el otro: la contribución neta es cero."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: una carga de +5 nC dentro de la superficie. (ε₀ = 8,85×10⁻¹² C²/N·m²)", "steps": [{"q": "¿Cuánto vale el flujo Φ?", "answer": 564.7, "unit": "N·m²/C", "hint": "Φ = Q/ε₀ = 5×10⁻⁹ / 8,85×10⁻¹².", "sol": "Φ ≈ 565 N·m²/C."}, {"q": "¿Cuánto vale Φ si el radio se duplica?", "answer": 564.7, "unit": "N·m²/C", "hint": "Q_enc no cambió.", "sol": "Igual: ≈ 565 N·m²/C."}, {"q": "¿Cuánto vale Φ si Q_enc = −2 nC?", "answer": -225.9, "unit": "N·m²/C", "hint": "Φ = −2×10⁻⁹ / 8,85×10⁻¹². El signo importa.", "sol": "Φ ≈ −226 N·m²/C (flujo entrante)."}], "challenges": [{"label": "Radio mínimo (0,2 m)", "set": {"rad": 0.2}, "note": "Si la carga queda dentro, el flujo es el mismo."}, {"label": "Radio máximo (1,0 m)", "set": {"rad": 1}, "note": "Mismo flujo con una superficie mucho mayor."}], "mistakes": ["Creer que el flujo depende del radio.", "Contar cargas que están fuera de la superficie.", "Olvidar el signo: Q_enc negativa da flujo negativo."], "glossary": {"Φ": "Flujo eléctrico, en N·m²/C.", "Q_enc": "Carga neta encerrada por la superficie.", "ε₀": "Permitividad del vacío, 8,85×10⁻¹² C²/(N·m²).", "Superficie gaussiana": "Superficie cerrada imaginaria que elegimos para aplicar la ley."}}</script>
+  <script type="application/json" id="didactic-data">{"idea": "La ley de Gauss dice que el flujo por una superficie cerrada depende solo de la carga que encierra. En una esfera, basta saber cuánta carga queda dentro del radio r para calcular el campo.", "observe": ["Agranda la superficie gaussiana (r): ¿cuándo cambia la carga encerrada?", "Cambia el material: en un conductor, el campo adentro es cero.", "Haz clic en un punto adentro, en la superficie y afuera, y compara el campo."], "predict": [{"q": "En una esfera conductora cargada, el campo en el interior (r < R) es…", "options": ["máximo", "cero", "igual al de la superficie"], "correct": 1, "why": "La carga de un conductor se ubica en su superficie: una superficie gaussiana adentro no encierra carga, así que Q_enc = 0 y E = 0.", "try": {"label": "Probarlo: conductor, r = 2,5 cm", "set": {"shape": "maciza", "mat": "conductor", "Q": 8, "R": 5, "rg": 2.5}}}, {"q": "Afuera de la esfera (r > R), el campo es el mismo que el de una carga puntual Q en el centro. Si duplicas r, E…", "options": ["se reduce a la mitad", "se reduce a la cuarta parte", "no cambia"], "correct": 1, "why": "Afuera, E = kQ/r², y al duplicar r el campo queda en 1/4."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: esfera maciza no conductora, Q = +8 nC y R = 5 cm. (k = 8,99×10⁹ N·m²/C²)", "steps": [{"q": "¿Cuánta carga encierra una superficie de r = 2,5 cm? (en nC)", "answer": 1, "unit": "nC", "hint": "Q_enc = Q·(r/R)³ = 8·(0,5)³.", "sol": "Q_enc = 1 nC."}, {"q": "¿Cuánto vale E a r = 2,5 cm? (en N/C)", "answer": 14380, "unit": "N/C", "hint": "E = k·Q_enc/r² = 8,99×10⁹ · 1×10⁻⁹ / (0,025)².", "sol": "E ≈ 1,44×10⁴ N/C, hacia afuera."}, {"q": "¿Cuánto vale E a r = 10 cm? (en N/C)", "answer": 7190, "unit": "N/C", "hint": "Afuera Q_enc = Q: E = kQ/r² = 8,99×10⁹ · 8×10⁻⁹ / (0,10)².", "sol": "E ≈ 7,19×10³ N/C."}, {"q": "Cambia el material a conductor: ¿cuánto vale E a r = 2,5 cm?", "answer": 0, "unit": "N/C", "hint": "En un conductor la carga está en la superficie: adentro Q_enc = 0.", "sol": "E = 0."}], "challenges": [{"label": "Casquete no conductor", "set": {"shape": "casquete", "mat": "dielectrico", "Q": 8, "R": 5, "rg": 2}, "note": "La cavidad tiene radio R/2 = 2,5 cm: a r = 2 cm no hay carga encerrada, E = 0."}, {"label": "Casquete conductor", "set": {"shape": "casquete", "mat": "conductor", "Q": 8, "R": 5, "rg": 4}, "note": "La carga está en la superficie exterior: adentro de R, E = 0."}, {"label": "Justo en la superficie (conductor)", "set": {"shape": "maciza", "mat": "conductor", "Q": 8, "R": 5, "rg": 5}, "note": "En r = R el campo salta de 0 a kQ/R² ≈ 2,88×10⁴ N/C."}], "mistakes": ["Creer que adentro de un conductor el campo es kQ/r²: adentro no hay carga encerrada.", "Confundir r (superficie gaussiana) con R (radio de la esfera).", "Olvidar pasar cm a m antes de calcular."], "glossary": {"r": "Radio de la superficie gaussiana, en cm.", "R": "Radio de la esfera, en cm.", "Q_enc": "Carga encerrada por la superficie gaussiana.", "Φ": "Flujo eléctrico: Q_enc/ε₀.", "Conductor / no conductor": "En un conductor la carga queda en la superficie; en un no conductor (dieléctrico) puede repartirse en el volumen."}}</script>
   </main>
   <script src="../js/data/sims.js"></script>
   <script src="../js/components/navbar.js"></script>
