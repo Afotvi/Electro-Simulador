@@ -18,7 +18,11 @@
     </header>
 
     <section class="sim-layout">
-      <div class="stage"><canvas id="stage" aria-label="Corte de una esfera con su superficie gaussiana. Haz clic para elegir un punto y ver el campo eléctrico allí."></canvas></div>
+      <div class="sim-main">
+        <div class="stage"><canvas id="stage" aria-label="Corte de una esfera con su superficie gaussiana. Haz clic para elegir un punto y ver el campo eléctrico allí."></canvas></div>
+        <div class="sim-notes" id="didactic-top"></div>
+        <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
+      </div>
 
       <aside class="panel">
         <div>
@@ -70,7 +74,6 @@
         </div>
       </aside>
     </section>
-  <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
   <script type="application/json" id="didactic-data">{"idea": "La ley de Gauss dice que el flujo por una superficie cerrada depende solo de la carga que encierra. En una esfera, basta saber cuánta carga queda dentro del radio r para calcular el campo.", "observe": ["Agranda la superficie gaussiana (r): ¿cuándo cambia la carga encerrada?", "Cambia el material: en un conductor, el campo adentro es cero.", "Haz clic en un punto adentro, en la superficie y afuera, y compara el campo."], "predict": [{"q": "En una esfera conductora cargada, el campo en el interior (r < R) es…", "options": ["máximo", "cero", "igual al de la superficie"], "correct": 1, "why": "La carga de un conductor se ubica en su superficie: una superficie gaussiana adentro no encierra carga, así que Q_enc = 0 y E = 0.", "try": {"label": "Probarlo: conductor, r = 2,5 cm", "set": {"shape": "maciza", "mat": "conductor", "Q": 8, "R": 5, "rg": 2.5}}}, {"q": "Afuera de la esfera (r > R), el campo es el mismo que el de una carga puntual Q en el centro. Si duplicas r, E…", "options": ["se reduce a la mitad", "se reduce a la cuarta parte", "no cambia"], "correct": 1, "why": "Afuera, E = kQ/r², y al duplicar r el campo queda en 1/4."}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: esfera maciza no conductora, Q = +8 nC y R = 5 cm. (k = 8,99×10⁹ N·m²/C²)", "steps": [{"q": "¿Cuánta carga encierra una superficie de r = 2,5 cm? (en nC)", "answer": 1, "unit": "nC", "hint": "Q_enc = Q·(r/R)³ = 8·(0,5)³.", "sol": "Q_enc = 1 nC."}, {"q": "¿Cuánto vale E a r = 2,5 cm? (en N/C)", "answer": 14380, "unit": "N/C", "hint": "E = k·Q_enc/r² = 8,99×10⁹ · 1×10⁻⁹ / (0,025)².", "sol": "E ≈ 1,44×10⁴ N/C, hacia afuera."}, {"q": "¿Cuánto vale E a r = 10 cm? (en N/C)", "answer": 7190, "unit": "N/C", "hint": "Afuera Q_enc = Q: E = kQ/r² = 8,99×10⁹ · 8×10⁻⁹ / (0,10)².", "sol": "E ≈ 7,19×10³ N/C."}, {"q": "Cambia el material a conductor: ¿cuánto vale E a r = 2,5 cm?", "answer": 0, "unit": "N/C", "hint": "En un conductor la carga está en la superficie: adentro Q_enc = 0.", "sol": "E = 0."}], "challenges": [{"label": "Casquete no conductor", "set": {"shape": "casquete", "mat": "dielectrico", "Q": 8, "R": 5, "rg": 2}, "note": "La cavidad tiene radio R/2 = 2,5 cm: a r = 2 cm no hay carga encerrada, E = 0."}, {"label": "Casquete conductor", "set": {"shape": "casquete", "mat": "conductor", "Q": 8, "R": 5, "rg": 4}, "note": "La carga está en la superficie exterior: adentro de R, E = 0."}, {"label": "Justo en la superficie (conductor)", "set": {"shape": "maciza", "mat": "conductor", "Q": 8, "R": 5, "rg": 5}, "note": "En r = R el campo salta de 0 a kQ/R² ≈ 2,88×10⁴ N/C."}], "mistakes": ["Creer que adentro de un conductor el campo es kQ/r²: adentro no hay carga encerrada.", "Confundir r (superficie gaussiana) con R (radio de la esfera).", "Olvidar pasar cm a m antes de calcular."], "glossary": {"r": "Radio de la superficie gaussiana, en cm.", "R": "Radio de la esfera, en cm.", "Q_enc": "Carga encerrada por la superficie gaussiana.", "Φ": "Flujo eléctrico: Q_enc/ε₀.", "Conductor / no conductor": "En un conductor la carga queda en la superficie; en un no conductor (dieléctrico) puede repartirse en el volumen."}}</script>
   </main>
   <script src="../js/data/sims.js"></script>

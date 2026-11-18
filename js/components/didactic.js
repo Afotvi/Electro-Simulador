@@ -1,6 +1,7 @@
 // Guía didáctica común: se genera desde el JSON #didactic-data de cada simulación.
 (function () {
   const dataEl = document.getElementById('didactic-data'), host = document.getElementById('didactic');
+  const top = document.getElementById('didactic-top') || host;   // «Idea clave» y «Qué observar» van junto a la simulación
   if (!dataEl || !host) return;
   const D = JSON.parse(dataEl.textContent);
   const h = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
@@ -10,10 +11,10 @@
     const s = document.getElementById(id); if (!s) return;
     s.value = v; s.dispatchEvent(new Event('input', { bubbles: true }));
   });
-  const block = (title) => { const s = h('section', 'dz-block'); s.appendChild(h('h2', '', title)); host.appendChild(s); return s; };
+  const block = (title, into = host) => { const s = h('section', 'dz-block'); s.appendChild(h('h2', '', title)); into.appendChild(s); return s; };
 
-  if (D.idea) { const s = h('p', 'dz-idea', `<b>Idea clave.</b> ${D.idea}`); host.appendChild(s); }
-  if (D.observe) { const s = block('Qué observar'); s.appendChild(h('ul', 'dz-list', D.observe.map((t) => `<li>${t}</li>`).join(''))); }
+  if (D.idea) { const s = h('p', 'dz-idea', `<b>Idea clave.</b> ${D.idea}`); top.appendChild(s); }
+  if (D.observe) { const s = block('Qué observar', top); s.appendChild(h('ul', 'dz-list', D.observe.map((t) => `<li>${t}</li>`).join(''))); }
 
   (D.predict || []).forEach((p, i) => {
     const s = block(i === 0 ? 'Predice y comprueba' : 'Otra predicción');

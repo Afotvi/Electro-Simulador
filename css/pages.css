@@ -37,7 +37,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:600}
 .btn.ghost{background:color-mix(in srgb,var(--accent) 12%,white);color:var(--accent)}
 .hint{font-size:.9rem;color:var(--muted)}
-@media (max-width:900px){.sim-layout{grid-template-columns:1fr}.stage canvas{height:400px}}
+@media (max-width:900px){.sim-layout{grid-template-columns:minmax(0,1fr)}.stage canvas{height:400px}}
 
 /* Ayuda */
 .help-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px}
@@ -68,6 +68,14 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 /* Contenedores que se muestran/ocultan (pestañas) */
 .stack{display:flex;flex-direction:column;gap:18px}
 .stack[hidden]{display:none}
+
+/* Columna izquierda: simulación + «Idea clave» y «Qué observar» debajo */
+.sim-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.sim-notes{display:grid;gap:14px}
+.sim-notes:empty{display:none}
+.sim-notes .dz-idea{font-size:1.05rem;padding:14px 18px}
+.sim-notes .dz-block{padding:16px 20px}
+@media (max-width:900px){.sim-main{display:contents}.sim-notes{order:3}}
 
 /* entradas numéricas junto a los deslizadores */
 .rowin{display:flex;align-items:center;gap:10px}
@@ -141,10 +149,12 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .expand-btn:hover{background:rgba(15,20,35,.85)}
 .has-expanded{overflow:hidden}
 .sim-layout.is-expanded{position:fixed;inset:0;z-index:1000;background:var(--bg);padding:12px;gap:12px;height:100dvh;align-items:stretch;grid-template-columns:minmax(0,1fr) 340px}
+.is-expanded>.sim-main{height:100%;min-height:0}
+.is-expanded .sim-notes{display:none}
 .is-expanded .stage{height:100%;min-height:0;border-radius:16px}
 .is-expanded .stage canvas{height:0;flex:1 1 auto;min-height:0}
 .is-expanded>.panel{height:100%;overflow:auto}
-@media (max-width:900px){.sim-layout.is-expanded{grid-template-columns:1fr;grid-template-rows:minmax(0,62%) minmax(0,1fr)}}
+@media (max-width:900px){.sim-layout.is-expanded{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,62%) minmax(0,1fr)}}
 
 /* Identidad */
 .slogan{font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.5rem)!important;font-style:italic;color:var(--ink)!important;line-height:1.4}
