@@ -139,3 +139,23 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .tag{font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,white);color:var(--ink)}
 .tag.ghost{background:none;border:1px solid var(--line);color:var(--muted);font-weight:600}
 .sim-card .req{display:block;margin-top:8px;color:var(--muted);font-size:.8rem}
+.hero h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800}
+
+/* ---- Pantalla completa de la simulación ---- */
+.stage{position:relative}
+.expand-btn{position:absolute;top:12px;right:12px;z-index:6;border:1px solid rgba(255,255,255,.3);background:rgba(15,20,35,.65);color:#fff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:.85rem;backdrop-filter:blur(4px)}
+.expand-btn:hover{background:rgba(15,20,35,.85)}
+.has-expanded{overflow:hidden}
+.sim-layout.is-expanded{position:fixed;inset:0;z-index:1000;background:var(--bg);padding:12px;gap:12px;height:100dvh;align-items:stretch;grid-template-columns:minmax(0,1fr) 340px}
+.is-expanded .stage{height:100%;border-radius:16px}
+.is-expanded .stage canvas{height:100%}
+.is-expanded .panel{height:100%;overflow:auto}
+.stage-hud{position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-wrap:wrap;gap:8px;background:rgba(255,255,255,.96);border-radius:14px;padding:10px;max-height:40%;overflow:auto}
+.stage-hud .readout{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.stage-hud .stat{min-width:120px}
+@media (max-width:900px){.sim-layout.is-expanded{grid-template-columns:1fr;grid-template-rows:minmax(0,58%) minmax(0,1fr)}}
+
+/* ---- Identidad ---- */
+.slogan{font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.5rem)!important;font-style:italic;color:var(--ink)!important;line-height:1.4}
+.ods-badge{display:inline-block;margin-top:14px;padding:6px 14px;border-radius:999px;background:var(--ink);color:#fff!important;font-size:.9rem!important;font-weight:700}
+.about{max-width:860px;margin-top:8px}.about h2{font-size:1.5rem;margin-bottom:10px}.about p{margin-bottom:10px}

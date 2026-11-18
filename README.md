@@ -1,4 +1,4 @@
-# Campo Abierto
+# Electro-simulador
 
 Laboratorio virtual de electromagnetismo (HTML, CSS y JavaScript puro).
 
