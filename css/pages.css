@@ -76,12 +76,12 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .release .row3{display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:10px}
 @media (max-width:900px){.panel.release{grid-template-columns:1fr}}
 
-/* ---- entradas numéricas junto a los deslizadores ---- */
+/* entradas numéricas junto a los deslizadores */
 .rowin{display:flex;align-items:center;gap:10px}
 .rowin input[type=range]{flex:1;min-width:0}
 .num{width:78px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit;font-variant-numeric:tabular-nums;background:#fff;color:var(--ink)}
 
-/* ---- guía didáctica ---- */
+/* guía didáctica */
 .didactic{margin-top:28px;display:grid;gap:16px;max-width:860px}
 .dz-idea{font-size:1.15rem;line-height:1.5;padding:16px 20px;border-left:5px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,white);border-radius:0 12px 12px 0}
 .dz-block{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
@@ -101,7 +101,7 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .dz-gloss dt{font-weight:700;color:var(--accent)}
 @media (max-width:560px){.dz-gloss{grid-template-columns:1fr}.num{width:70px}}
 
-/* ---- Inicio ---- */
+/* Inicio */
 .home-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:36px;align-items:center;padding:40px 0 24px}
 .home-hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800}
 .home-hero p{color:var(--muted);font-size:1.1rem;margin-top:16px;max-width:52ch}
@@ -131,7 +131,7 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .route li.soon{opacity:.6}
 @media (max-width:860px){.home-hero{grid-template-columns:1fr}.home-stage canvas{height:300px}}
 
-/* ---- Catálogo ---- */
+/* Catálogo */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
 .chipbtn{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-weight:600;color:var(--muted)}
 .chipbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -141,7 +141,7 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .sim-card .req{display:block;margin-top:8px;color:var(--muted);font-size:.8rem}
 .hero h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800}
 
-/* ---- Pantalla completa de la simulación ---- */
+/* Pantalla completa de la simulación */
 .stage{position:relative}
 .expand-btn{position:absolute;top:12px;right:12px;z-index:6;border:1px solid rgba(255,255,255,.3);background:rgba(15,20,35,.65);color:#fff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:.85rem;backdrop-filter:blur(4px)}
 .expand-btn:hover{background:rgba(15,20,35,.85)}
@@ -155,7 +155,15 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .stage-hud .stat{min-width:120px}
 @media (max-width:900px){.sim-layout.is-expanded{grid-template-columns:1fr;grid-template-rows:minmax(0,58%) minmax(0,1fr)}}
 
-/* ---- Identidad ---- */
+/* Identidad */
 .slogan{font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.5rem)!important;font-style:italic;color:var(--ink)!important;line-height:1.4}
 .ods-badge{display:inline-block;margin-top:14px;padding:6px 14px;border-radius:999px;background:var(--ink);color:#fff!important;font-size:.9rem!important;font-weight:700}
 .about{max-width:860px;margin-top:8px}.about h2{font-size:1.5rem;margin-bottom:10px}.about p{margin-bottom:10px}
+
+/*  Resultados dentro del recuadro (todas las vistas) */
+.stage-hud{pointer-events:none;background:rgba(255,255,255,.93);padding:8px;gap:6px;max-height:45%}
+.stage-hud .stat{pointer-events:auto;min-width:104px;padding:7px 11px;margin:0}
+.stage-hud .stat b{font-size:1.05rem}
+.stage-hud .stat span{font-size:.75rem}
+.stage-hud .stat[style*="grid-column"]{grid-column:auto}
+@media (max-width:560px){.stage-hud{left:8px;right:8px;bottom:8px}.stage-hud .stat{min-width:92px}}
