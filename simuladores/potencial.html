@@ -14,29 +14,11 @@
     <header class="sim-head">
       <span class="chip">Unidad 2 · Circuitos</span>
       <h1>Potencial eléctrico</h1>
-      <p>El color es el potencial V en cada punto y las líneas unen puntos con el mismo V (equipotenciales). Arrastra los puntos A y B para medir la diferencia de potencial y el trabajo que hace el campo.</p>
+      <p>El color es el potencial V en cada punto y las líneas unen puntos con el mismo V (equipotenciales). Arrastra los puntos A y B y cambia el valor de la carga fuente: el potencial en cada punto y la diferencia de potencial ΔV se actualizan al instante.</p>
     </header>
 
     <section class="sim-layout">
-      <div class="sim-main">
-        <div class="stage"><canvas id="stage" aria-label="Mapa de potencial eléctrico con líneas equipotenciales"></canvas></div>
-
-        <div class="panel release">
-          <h3>Soltar carga</h3>
-          <div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn" id="release" type="button">Soltar q₀ desde A</button>
-              <button class="btn ghost" id="stopP" type="button">Quitar</button>
-            </div>
-            <p class="hint" id="relMsg" style="margin-top:8px"></p>
-          </div>
-          <div class="row3">
-            <div class="stat"><span>Potencial U</span><b id="eU" style="font-size:1.05rem">–</b></div>
-            <div class="stat"><span>Cinética K</span><b id="eK" style="font-size:1.05rem">–</b></div>
-            <div class="stat"><span>Mecánica U + K</span><b id="eT" style="font-size:1.05rem">–</b></div>
-          </div>
-        </div>
-      </div>
+      <div class="stage"><canvas id="stage" aria-label="Mapa de potencial eléctrico con líneas equipotenciales y los puntos A y B"></canvas></div>
 
       <aside class="panel">
         <div>
@@ -49,33 +31,22 @@
         </div>
 
         <div>
-          <h3>Cargas</h3>
-          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga seleccionada</span> <output id="qselv">–</output></label>
-            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="2"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn" id="addPos" type="button">+ Agregar</button>
-            <button class="btn" id="addNeg" type="button">− Agregar</button>
-            <button class="btn ghost" id="del" type="button">Quitar</button>
-            <button class="btn ghost" id="clear" type="button">Limpiar</button>
-          </div>
+          <h3>Carga fuente</h3>
+          <div class="ctrl"><label for="qsel"><span id="qlabel">Carga fuente</span> <output id="qselv">–</output></label>
+            <input id="qsel" type="range" min="-5" max="5" step="0.5" value="4"></div>
+          <p class="hint">Haz clic en una carga para elegirla; arrástrala para moverla.</p>
         </div>
 
         <div>
-          <h3>Carga de prueba y vista</h3>
-          <div class="ctrl"><label for="q0">Carga q₀ que se mueve de A a B <output id="q0v"></output></label>
-            <input id="q0" type="range" min="-5" max="5" step="0.5" value="1"></div>
+          <h3>Vista</h3>
           <label class="chk"><input id="showHeat" type="checkbox" checked> Mapa de colores</label>
           <label class="chk"><input id="showLines" type="checkbox" checked> Líneas equipotenciales</label>
-          
         </div>
 
         <div class="readout">
           <div class="stat"><span>V en A</span><b id="vA">–</b></div>
           <div class="stat"><span>V en B</span><b id="vB">–</b></div>
           <div class="stat"><span>ΔV = V_B − V_A</span><b id="dV">–</b></div>
-          <div class="stat"><span>E en A</span><b id="eA">–</b></div>
-          <div class="stat"><span>ΔU = q₀·ΔV</span><b id="dU">–</b></div>
-          <div class="stat"><span>Trabajo del campo</span><b id="W">–</b></div>
         </div>
 
         <div>
@@ -85,12 +56,12 @@
 
         <div>
           <button class="btn ghost" id="exercise" type="button">Cargar ejercicio guiado</button>
-          <p class="hint" style="margin-top:8px">Ejercicio: q = +4 nC, A a 0,2 m y B a 0,6 m. Calcula V_A = kq/r (≈ 180 V) y V_B (≈ 60 V). Con q₀ = +1 nC, ¿cuánto trabajo hace el campo al llevarla de A a B? Prueba también el dipolo: A y B quedan sobre la línea V = 0 y W = 0.</p>
+          <p class="hint" style="margin-top:8px">Ejercicio: q = +4 nC, A a 0,2 m y B a 0,6 m. Calcula V_A = kq/r (≈ 180 V), V_B (≈ 60 V) y ΔV = V_B − V_A (≈ −120 V). Prueba también el dipolo: A y B quedan sobre la línea V = 0 y ΔV = 0.</p>
         </div>
       </aside>
     </section>
   <section id="didactic" class="didactic" aria-label="Guía de aprendizaje"></section>
-  <script type="application/json" id="didactic-data">{"idea": "El potencial V = kq/r es energía por unidad de carga. El trabajo del campo entre dos puntos es W = q₀(V_A − V_B) y no depende del camino.", "observe": ["Las líneas equipotenciales siempre cruzan las líneas de campo en ángulo recto.", "Una carga positiva se mueve hacia menor potencial.", "Con el dipolo, A y B quedan sobre V = 0 y el trabajo es cero."], "predict": [{"q": "Si duplicas q₀ (de +1 a +2 nC), el trabajo de A a B…", "options": ["se duplica", "se reduce a la mitad", "no cambia", "se cuadruplica"], "correct": 0, "why": "W = q₀(V_A − V_B) es proporcional a q₀.", "try": {"label": "Probarlo: q₀ = +2 nC", "set": {"q0": 2}}}, {"q": "Si q₀ es negativa (−1 nC), el trabajo de A a B…", "options": ["cambia de signo", "es el mismo", "es cero", "se duplica"], "correct": 0, "why": "V_A − V_B sigue igual, pero q₀ cambió de signo.", "try": {"label": "Probarlo: q₀ = −1 nC", "set": {"q0": -1}}}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: q = +4 nC, A a 0,2 m y B a 0,6 m, q₀ = +1 nC.", "steps": [{"q": "¿Cuánto vale V_A?", "answer": 179.75, "unit": "V", "hint": "V = kq/r = 8,99×10⁹ · 4×10⁻⁹ / 0,2.", "sol": "V_A ≈ 180 V."}, {"q": "¿Cuánto vale V_B?", "answer": 59.92, "unit": "V", "hint": "Misma fórmula con r = 0,6 m.", "sol": "V_B ≈ 60 V."}, {"q": "¿Cuánto trabajo hace el campo sobre q₀ de A a B? (en nJ)", "answer": 119.8, "unit": "nJ", "hint": "W = q₀(V_A − V_B) = 1 nC · 120 V.", "sol": "W ≈ 120 nJ (positivo: el campo empuja a q₀)."}], "challenges": [{"label": "q₀ = +2 nC", "set": {"q0": 2}, "note": "W ≈ 240 nJ: el doble."}, {"label": "q₀ = −1 nC", "set": {"q0": -1}, "note": "W ≈ −120 nJ: el campo se opone al movimiento."}], "mistakes": ["Confundir potencial V (voltios) con energía potencial U (joules).", "Invertir el orden: es V_A − V_B, no V_B − V_A.", "Pensar que potencial cero significa campo cero."], "glossary": {"V": "Potencial eléctrico, en voltios (J/C).", "U": "Energía potencial, U = q·V, en joules.", "W": "Trabajo del campo eléctrico.", "Equipotencial": "Línea o superficie donde V es el mismo en todos los puntos."}}</script>
+  <script type="application/json" id="didactic-data">{"idea": "El potencial V = kq/r es una magnitud escalar: solo tiene valor y signo, no dirección. La diferencia de potencial entre dos puntos es ΔV = V_B − V_A.", "observe": ["Cerca de una carga positiva el potencial es alto; al alejarte baja hacia 0.", "Cambia el valor de la carga fuente y mira cómo V_A, V_B y ΔV cambian a la vez.", "Mueve B sobre una misma línea equipotencial: V_B no cambia y ΔV tampoco.", "Con el dipolo, A y B quedan sobre la línea V = 0 y ΔV = 0."], "predict": [{"q": "Con la escena «Una carga» (q = +4 nC), si cambias q a +2 nC, la diferencia de potencial ΔV entre A y B…", "options": ["se reduce a la mitad", "se duplica", "no cambia", "cambia de signo"], "correct": 0, "why": "V = kq/r es proporcional a q, y ΔV también.", "try": {"label": "Probarlo: q = +2 nC", "set": {"qsel": 2}}}, {"q": "Si cambias la carga fuente de +4 nC a −4 nC, ΔV…", "options": ["cambia de signo", "se reduce a la mitad", "no cambia", "es cero"], "correct": 0, "why": "V_A y V_B cambian de signo, así que ΔV también; su valor absoluto es el mismo.", "try": {"label": "Probarlo: q = −4 nC", "set": {"qsel": -4}}}], "stepsIntro": "Pulsa «Cargar ejercicio guiado»: q = +4 nC, A a 0,2 m y B a 0,6 m.", "steps": [{"q": "¿Cuánto vale V_A?", "answer": 179.75, "unit": "V", "hint": "V = kq/r = 8,99×10⁹ · 4×10⁻⁹ / 0,2.", "sol": "V_A ≈ 180 V."}, {"q": "¿Cuánto vale V_B?", "answer": 59.92, "unit": "V", "hint": "Misma fórmula con r = 0,6 m.", "sol": "V_B ≈ 60 V."}, {"q": "¿Cuánto vale ΔV = V_B − V_A?", "answer": -119.83, "unit": "V", "hint": "Resta V_B − V_A = 60 − 180.", "sol": "ΔV ≈ −120 V: B está a menor potencial que A."}], "challenges": [{"label": "q = +2 nC", "set": {"qsel": 2}, "note": "ΔV ≈ −60 V: la mitad."}, {"label": "q = −4 nC", "set": {"qsel": -4}, "note": "ΔV ≈ +120 V: mismo valor, signo contrario."}], "mistakes": ["Confundir potencial V (voltios) con energía potencial U (joules).", "Invertir el orden: aquí ΔV = V_B − V_A.", "Creer que el potencial tiene dirección: es un número, no un vector.", "Pensar que V = 0 significa que no hay carga cerca."], "glossary": {"V": "Potencial eléctrico en un punto, en voltios (J/C).", "ΔV": "Diferencia de potencial entre dos puntos: V_B − V_A.", "Escalar": "Magnitud con valor y signo, pero sin dirección.", "Equipotencial": "Línea o superficie donde V es el mismo en todos los puntos."}}</script>
   </main>
   <script src="../js/data/sims.js"></script>
   <script src="../js/components/navbar.js"></script>
@@ -100,7 +71,6 @@
   <script src="../js/core/constants.js"></script>
   <script src="../js/core/field.js"></script>
   <script src="../js/core/contours.js"></script>
-  <script src="../js/core/particle.js"></script>
   <script src="../js/core/format.js"></script>
   <script src="../js/sims/potencial.js"></script>
   <script src="../js/components/numeric.js"></script>

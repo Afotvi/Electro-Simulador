@@ -69,13 +69,6 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .stack{display:flex;flex-direction:column;gap:18px}
 .stack[hidden]{display:none}
 
-/* Columna izquierda: canvas + tarjeta debajo */
-.sim-main{display:flex;flex-direction:column;gap:20px;min-width:0}
-.panel.release{display:grid;grid-template-columns:1fr auto;gap:10px 24px;align-items:center}
-.panel.release h3{grid-column:1/-1;margin:0}
-.release .row3{display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:10px}
-@media (max-width:900px){.panel.release{grid-template-columns:1fr}}
-
 /* entradas numéricas junto a los deslizadores */
 .rowin{display:flex;align-items:center;gap:10px}
 .rowin input[type=range]{flex:1;min-width:0}
@@ -151,9 +144,6 @@ select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10
 .is-expanded .stage{height:100%;min-height:0;border-radius:16px}
 .is-expanded .stage canvas{height:0;flex:1 1 auto;min-height:0}
 .is-expanded>.panel{height:100%;overflow:auto}
-.is-expanded>.sim-main{height:100%;min-height:0}
-.is-expanded>.sim-main .stage{flex:1 1 0;height:auto;min-height:0}
-.is-expanded>.sim-main .panel.release{flex:0 0 auto;padding:12px 16px}
 @media (max-width:900px){.sim-layout.is-expanded{grid-template-columns:1fr;grid-template-rows:minmax(0,62%) minmax(0,1fr)}}
 
 /* Identidad */
